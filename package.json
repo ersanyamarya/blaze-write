@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@ersanyamarya/common-node-utils": "^0.0.9",
+    "@ersanyamarya/essential-server-utils": "^0.0.10",
     "axios": "^1.0.0",
     "mongoose": "^7.5.1",
     "tslib": "^2.3.0"

@@ -1,0 +1,16 @@
+{
+  "name": "mongo-db",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/mongo-db/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/mongo-db/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}

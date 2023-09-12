@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@blaze-write/config": ["libs/config/src/index.ts"],
+      "@blaze-write/mongo-db": ["libs/mongo-db/src/index.ts"],
       "@ersanyamarya/codename-langchain": ["packages/codename-langchain/src/index.ts"]
     }
   },
