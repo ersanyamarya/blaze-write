@@ -1,0 +1,34 @@
+{
+  "name": "codename-langchain",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/codename-langchain/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/codename-langchain",
+        "tsConfig": "packages/codename-langchain/tsconfig.lib.json",
+        "packageJson": "packages/codename-langchain/package.json",
+        "main": "packages/codename-langchain/src/index.ts",
+        "assets": ["packages/codename-langchain/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs codename-langchain {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/codename-langchain/**/*.ts",
+          "packages/codename-langchain/package.json"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

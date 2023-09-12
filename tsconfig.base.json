@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@ersanyamarya/codename-langchain": [
+        "packages/codename-langchain/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
