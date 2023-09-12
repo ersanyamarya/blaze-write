@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { Typography } from '@mui/material'
 
 import { Link, Route, Routes } from 'react-router-dom'
 
@@ -9,11 +10,12 @@ const StyledApp = styled.div`
 export function App() {
   return (
     <StyledApp>
-      <h1>
-        <span role="img" aria-label="Welcome to blaze-ui!">
-          🔥
-        </span>
-      </h1>
+      <Typography variant="h1" component="h1" gutterBottom>
+        Blaze UI
+      </Typography>
+      <Typography variant="h2" gutterBottom>
+        Welcome to Blaze UI!
+      </Typography>
       <Routes>
         <Route
           path="/"
