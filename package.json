@@ -2,10 +2,14 @@
   "name": "@blaze-write/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
+  },
   "private": true,
   "dependencies": {
+    "@ersanyamarya/common-node-utils": "^0.0.9",
     "axios": "^1.0.0",
+    "mongoose": "^7.5.1",
     "tslib": "^2.3.0"
   },
   "devDependencies": {

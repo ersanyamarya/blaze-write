@@ -15,9 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ersanyamarya/codename-langchain": [
-        "packages/codename-langchain/src/index.ts"
-      ]
+      "@blaze-write/config": ["libs/config/src/index.ts"],
+      "@ersanyamarya/codename-langchain": ["packages/codename-langchain/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
