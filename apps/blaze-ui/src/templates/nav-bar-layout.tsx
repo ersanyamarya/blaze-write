@@ -14,7 +14,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { Frame, InboxIcon, LucideSpace, MailIcon, PlusCircleIcon, Space } from 'lucide-react'
-import { NavLink, useOutlet } from 'react-router-dom'
+import { NavLink, useLocation, useOutlet } from 'react-router-dom'
 const drawerWidth = 320
 const pathRegexp = (route: string): RegExp => new RegExp(`${route}.*`)
 export function NavBarLayout() {
@@ -24,7 +24,7 @@ export function NavBarLayout() {
       sort: EnumSortOrder.Desc,
     },
   })
-
+  const location = useLocation()
   const outlet = useOutlet()
 
   if (loading) return <Typography variant="h1"> Loading... </Typography>
@@ -58,12 +58,13 @@ export function NavBarLayout() {
         </AppBar>
         <Divider />
         <List>
-          {data?.topicFindAll?.map((topic, index) => (
-            <ListItem key={topic?._id} disablePadding>
-              <NavLink
-                to={`/topic/${topic?._id}`}
-                style={({ isActive, isPending }) => {
-                  return {
+          {data?.topicFindAll?.map((topic, index) => {
+            const isActive = location.pathname.match(pathRegexp(`/topic/${topic?._id}`))
+            return (
+              <ListItem key={topic?._id} disablePadding>
+                <NavLink
+                  to={`/topic/${topic?._id}`}
+                  style={{
                     textDecoration: 'none',
                     display: 'flex',
                     flexDirection: 'row',
@@ -73,19 +74,18 @@ export function NavBarLayout() {
                     height: '100%',
                     backgroundColor: isActive ? theme.palette.primary.dark : 'inherit',
                     color: isActive ? theme.palette.primary.contrastText : 'inherit',
-                  }
-                }}
-                className={({ isActive, isPending }) => {
-                  return isActive ? 'active' : isPending ? 'pending' : ''
-                }}
-              >
-                <ListItemButton>
-                  <ListItemIcon>{<Frame />}</ListItemIcon>
-                  <ListItemText primary={topic?.name} />
-                </ListItemButton>
-              </NavLink>
-            </ListItem>
-          ))}
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>
+                      {<Frame color={isActive ? theme.palette.primary.contrastText : theme.palette.text.primary} />}
+                    </ListItemIcon>
+                    <ListItemText primary={topic?.name} />
+                  </ListItemButton>
+                </NavLink>
+              </ListItem>
+            )
+          })}
         </List>
         <Divider />
         <Box
