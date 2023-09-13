@@ -8,7 +8,7 @@ export function NavBarLayout() {
       <AppBar>
         <Toolbar>
           <Typography variant="h4" component="h1">
-            Blaze UI
+            Blaze Writer
           </Typography>
         </Toolbar>
       </AppBar>

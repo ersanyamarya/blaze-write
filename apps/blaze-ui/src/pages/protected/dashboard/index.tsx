@@ -16,8 +16,11 @@ import { Frame, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { datePrettify, timeDifference, timePrettify } from 'time-pocket'
 import AddTopicDialog from './add-topic'
+import { useNavigate } from 'react-router-dom'
 
 export function Dashboard() {
+  // Navigator
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [currentTopic, setCurrentTopic] = useState<string>('apple')
 
@@ -72,19 +75,26 @@ export function Dashboard() {
           <Card
             key={topic?._id}
             elevation={2}
+            onClick={() => {
+              navigate(`/topic/${topic?._id}`)
+            }}
             sx={{
               width: '35vw',
               padding: '1rem 0.5rem 0rem 0rem',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
+              cursor: 'pointer',
+              // hover
+              '&:hover': {
+                boxShadow: '2px 2px 5px 2px rgba(0,0,0,0.25)',
+              },
             }}
           >
             <CardContent>
-              <Typography variant="h5" gutterBottom>
+              <Typography textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'} variant="h5" gutterBottom>
                 {topic?.name}
               </Typography>
-
               <Divider
                 sx={{
                   margin: '1rem 0',

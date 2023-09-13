@@ -22,6 +22,7 @@ export default function Routing() {
         >
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/topic/:topicId" element={<Dashboard />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
