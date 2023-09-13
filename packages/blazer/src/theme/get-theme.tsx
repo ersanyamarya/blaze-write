@@ -7,18 +7,39 @@ const getTheme = (mode: PaletteMode): Theme => {
       palette: {
         mode,
         primary: {
-          main: '#1976d2',
+          main: '#99cc00',
         },
         secondary: {
-          main: '#dc004e',
+          main: '#CC9900',
         },
         background: {
-          default: mode === 'light' ? '#fff' : '#121212',
-          paper: mode === 'light' ? '#fff' : '#1c1c1c',
+          default: mode === 'light' ? '#fcfcfc' : '#121212',
+          paper: mode === 'light' ? '#f5f5f5' : '#1c1c1c',
         },
       },
       typography: {
         fontFamily,
+      },
+      components: {
+        MuiCssBaseline: {
+          styleOverrides: {
+            body: {
+              fontFamily,
+            },
+          },
+        },
+        MuiAppBar: {
+          defaultProps: {
+            color: 'secondary',
+            position: 'static',
+          },
+          styleOverrides: {
+            root: {
+              boxShadow: 'none',
+              color: '#fcfcfc',
+            },
+          },
+        },
       },
     })
   )
