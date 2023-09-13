@@ -1,5 +1,17 @@
-import { EnumSortOrder, useTopicFindAllQuery } from '@blaze-write/api-operations'
-import { Box, Card, CardContent, Chip, Divider, IconButton, Stack, Typography } from '@mui/material'
+import { EnumSortOrder, useTopicCreateOneMutation, useTopicFindAllQuery } from '@blaze-write/api-operations'
+import {
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  Chip,
+  Divider,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { Frame, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { datePrettify, timeDifference, timePrettify } from 'time-pocket'
@@ -7,18 +19,23 @@ import AddTopicDialog from './add-topic'
 
 export function Dashboard() {
   const [open, setOpen] = useState(false)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
+  const [currentTopic, setCurrentTopic] = useState<string>('apple')
 
   const handleClose = () => {
     setOpen(false)
   }
   const handleAddTopic = (topic: string) => {
-    console.log(topic)
+    addTopic({
+      variables: {
+        name: topic,
+      },
+    })
     setOpen(false)
   }
+
+  const [addTopic] = useTopicCreateOneMutation({
+    refetchQueries: ['TopicFindAll'],
+  })
 
   const { data, loading, error } = useTopicFindAllQuery({
     variables: {
@@ -31,9 +48,12 @@ export function Dashboard() {
 
   return (
     <Stack textAlign="center" spacing={2} direction="column">
-      <AddTopicDialog open={open} handleClose={handleClose} handleAddTopic={handleAddTopic} />
+      <AddTopicDialog open={open} handleClose={handleClose} handleAddTopic={handleAddTopic} name={currentTopic} />
       <IconButton
-        onClick={handleClickOpen}
+        onClick={() => {
+          setCurrentTopic('')
+          setOpen(true)
+        }}
         sx={{
           position: 'absolute',
           bottom: '2rem',
@@ -55,12 +75,16 @@ export function Dashboard() {
             sx={{
               width: '35vw',
               padding: '1rem 0.5rem 0rem 0rem',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
             }}
           >
             <CardContent>
               <Typography variant="h5" gutterBottom>
                 {topic?.name}
               </Typography>
+
               <Divider
                 sx={{
                   margin: '1rem 0',
@@ -86,6 +110,22 @@ export function Dashboard() {
                 </Typography>
               </Box>
             </CardContent>
+
+            <CardActions>
+              <Button size="small" color="error">
+                Remove
+              </Button>
+              {/* <Button
+                size="small"
+                color="primary"
+                onClick={() => {
+                  setCurrentTopic(topic?.name || '')
+                  setOpen(true)
+                }}
+              >
+                Edit
+              </Button> */}
+            </CardActions>
           </Card>
         ))}
       </Stack>

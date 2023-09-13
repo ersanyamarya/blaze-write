@@ -1,0 +1,5 @@
+mutation TopicCreateOne($name: String!) {
+  topicCreateOne(name: $name) {
+    _id
+  }
+}

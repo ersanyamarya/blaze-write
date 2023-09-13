@@ -104,6 +104,13 @@ export type TopicPeopleAlsoAsk = {
   title: Scalars['String']['output'];
 };
 
+export type TopicCreateOneMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type TopicCreateOneMutation = { __typename?: 'Mutation', topicCreateOne?: { __typename?: 'Topic', _id: any } | null };
+
 export type TopicFindAllQueryVariables = Exact<{
   sort?: InputMaybe<EnumSortOrder>;
 }>;
@@ -112,6 +119,39 @@ export type TopicFindAllQueryVariables = Exact<{
 export type TopicFindAllQuery = { __typename?: 'Query', topicFindAll?: Array<{ __typename?: 'Topic', name: string, _id: any, createdAt?: any | null, organicCount?: number | null, peopleAlsoAskCount?: number | null } | null> | null };
 
 
+export const TopicCreateOneDocument = gql`
+    mutation TopicCreateOne($name: String!) {
+  topicCreateOne(name: $name) {
+    _id
+  }
+}
+    `;
+export type TopicCreateOneMutationFn = Apollo.MutationFunction<TopicCreateOneMutation, TopicCreateOneMutationVariables>;
+
+/**
+ * __useTopicCreateOneMutation__
+ *
+ * To run a mutation, you first call `useTopicCreateOneMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTopicCreateOneMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [topicCreateOneMutation, { data, loading, error }] = useTopicCreateOneMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useTopicCreateOneMutation(baseOptions?: Apollo.MutationHookOptions<TopicCreateOneMutation, TopicCreateOneMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<TopicCreateOneMutation, TopicCreateOneMutationVariables>(TopicCreateOneDocument, options);
+      }
+export type TopicCreateOneMutationHookResult = ReturnType<typeof useTopicCreateOneMutation>;
+export type TopicCreateOneMutationResult = Apollo.MutationResult<TopicCreateOneMutation>;
+export type TopicCreateOneMutationOptions = Apollo.BaseMutationOptions<TopicCreateOneMutation, TopicCreateOneMutationVariables>;
 export const TopicFindAllDocument = gql`
     query TopicFindAll($sort: EnumSortOrder) {
   topicFindAll(sort: $sort) {
