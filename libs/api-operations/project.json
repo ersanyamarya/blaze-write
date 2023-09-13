@@ -1,0 +1,27 @@
+{
+  "name": "api-operations",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api-operations/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api-operations/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "cd libs/api-operations && graphql-codegen --require dotenv/config --config codegen.yml --verbose"
+          }
+        ],
+        "parallel": false
+      }
+    }
+  }
+}

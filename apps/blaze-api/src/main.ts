@@ -50,10 +50,8 @@ const start = async (): Promise<void> => {
 
   const server = app
     .listen(port, async () => {
-      const host = `${serverConfig.host}:${port}`
-
-      logger.info(`Server listening ${host}`)
-      logger.info(`GraphQL server listening on ${host}/graphql`)
+      logger.info(`Server listening ${serverConfig.host}`)
+      logger.info(`GraphQL server listening on ${serverConfig.graphqlURL}`)
     })
     .on('error', err => {
       logger.error(err)

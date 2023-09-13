@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@blaze-write/api-operations": ["libs/api-operations/src/index.ts"],
       "@blaze-write/config": ["libs/config/src/index.ts"],
       "@blaze-write/mongo-db": ["libs/mongo-db/src/index.ts"],
       "@ersanyamarya/blazer": ["packages/blazer/src/index.ts"],

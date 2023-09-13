@@ -13,8 +13,8 @@ const getTheme = (mode: PaletteMode): Theme => {
           main: '#CC9900',
         },
         background: {
-          default: mode === 'light' ? '#fcfcfc' : '#121212',
-          paper: mode === 'light' ? '#f5f5f5' : '#1c1c1c',
+          default: mode === 'light' ? '#f5f5f5' : '#121212',
+          paper: mode === 'light' ? '#fcfcfc' : '#1c1c1c',
         },
       },
       typography: {
@@ -37,6 +37,19 @@ const getTheme = (mode: PaletteMode): Theme => {
             root: {
               boxShadow: 'none',
               color: '#fcfcfc',
+            },
+          },
+        },
+        MuiTextField: {
+          defaultProps: {
+            variant: 'outlined',
+            InputLabelProps: {
+              shrink: true,
+            },
+          },
+          styleOverrides: {
+            root: {
+              marginTop: '1.2rem',
             },
           },
         },

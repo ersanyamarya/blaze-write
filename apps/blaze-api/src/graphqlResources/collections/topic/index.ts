@@ -6,6 +6,17 @@ import { schemaComposer } from 'graphql-compose'
 import { composeMongoose } from 'graphql-compose-mongoose'
 const TopicTC = composeMongoose(TopicModel, {})
 
+TopicTC.addFields({
+  organicCount: {
+    type: 'Int',
+    resolve: async ({ organic }) => organic.length,
+  },
+  peopleAlsoAskCount: {
+    type: 'Int',
+    resolve: async ({ peopleAlsoAsk }) => peopleAlsoAsk.length,
+  },
+})
+
 TopicTC.addResolver({
   kind: 'query',
   name: 'topicFindAll',
@@ -17,7 +28,7 @@ TopicTC.addResolver({
   },
   resolve: async ({ args }) => {
     const { limit, skip, sort } = args
-    const topics = await TopicModel.find().limit(limit).skip(skip).sort({ _id: sort })
+    const topics = await TopicModel.find().limit(limit).skip(skip).sort({ createdAt: sort })
     return topics
   },
 })

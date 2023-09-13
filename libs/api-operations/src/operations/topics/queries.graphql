@@ -1,0 +1,9 @@
+query TopicFindAll($sort: EnumSortOrder) {
+  topicFindAll(sort: $sort) {
+    name
+    _id
+    createdAt
+    organicCount
+    peopleAlsoAskCount
+  }
+}
