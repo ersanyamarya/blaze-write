@@ -1,25 +1,110 @@
-import { AppBar, Toolbar, Typography } from '@mui/material'
-import { useOutlet } from 'react-router-dom'
-
+import { EnumSortOrder, useTopicFindAllQuery } from '@blaze-write/api-operations'
+import {
+  AppBar,
+  Box,
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+  Typography,
+  useTheme,
+} from '@mui/material'
+import { Frame, InboxIcon, LucideSpace, MailIcon, PlusCircleIcon, Space } from 'lucide-react'
+import { NavLink, useOutlet } from 'react-router-dom'
+const drawerWidth = 320
+const pathRegexp = (route: string): RegExp => new RegExp(`${route}.*`)
 export function NavBarLayout() {
+  const theme = useTheme()
+  const { data, loading, error } = useTopicFindAllQuery({
+    variables: {
+      sort: EnumSortOrder.Desc,
+    },
+  })
+
   const outlet = useOutlet()
+
+  if (loading) return <Typography variant="h1"> Loading... </Typography>
+  if (error) return <Typography variant="h1"> Error! </Typography>
+
   return (
-    <>
-      <AppBar>
+    <Box sx={{ display: 'flex' }}>
+      {/* <AppBar position="fixed" sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
         <Toolbar>
-          <Typography variant="h4" component="h1">
+          <Typography variant="h6" noWrap component="div">
             Blaze Writer
           </Typography>
         </Toolbar>
-      </AppBar>
-      <div
-        style={{
-          height: 'calc(100vh - 64px)',
-          overflow: 'auto',
+      </AppBar> */}
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
         }}
       >
+        <AppBar>
+          <Toolbar>
+            <Typography variant="h6" noWrap component="div">
+              Blaze Writer
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Divider />
+        <List>
+          {data?.topicFindAll?.map((topic, index) => (
+            <ListItem key={topic?._id} disablePadding>
+              <NavLink
+                to={`/topic/${topic?._id}`}
+                style={({ isActive, isPending }) => {
+                  return {
+                    textDecoration: 'none',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: isActive ? theme.palette.primary.dark : 'inherit',
+                    color: isActive ? theme.palette.primary.contrastText : 'inherit',
+                  }
+                }}
+                className={({ isActive, isPending }) => {
+                  return isActive ? 'active' : isPending ? 'pending' : ''
+                }}
+              >
+                <ListItemButton>
+                  <ListItemIcon>{<Frame />}</ListItemIcon>
+                  <ListItemText primary={topic?.name} />
+                </ListItemButton>
+              </NavLink>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <Box
+          sx={{
+            flex: 1,
+          }}
+        />
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>{<PlusCircleIcon />}</ListItemIcon>
+              <ListItemText primary="Add new Topic" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
         {outlet}
-      </div>
-    </>
+      </Box>
+    </Box>
   )
 }

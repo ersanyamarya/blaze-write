@@ -65,6 +65,7 @@ export type MutationTopicStartGoogleSearchArgs = {
 export type Query = {
   __typename?: 'Query';
   topicFindAll?: Maybe<Array<Maybe<Topic>>>;
+  topicFindById?: Maybe<Topic>;
 };
 
 
@@ -72,6 +73,11 @@ export type QueryTopicFindAllArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   sort?: InputMaybe<EnumSortOrder>;
+};
+
+
+export type QueryTopicFindByIdArgs = {
+  id: Scalars['MongoID']['input'];
 };
 
 export type Topic = {
@@ -117,6 +123,13 @@ export type TopicFindAllQueryVariables = Exact<{
 
 
 export type TopicFindAllQuery = { __typename?: 'Query', topicFindAll?: Array<{ __typename?: 'Topic', name: string, _id: any, createdAt?: any | null, organicCount?: number | null, peopleAlsoAskCount?: number | null } | null> | null };
+
+export type TopicFindByIdQueryVariables = Exact<{
+  topicFindByIdId: Scalars['MongoID']['input'];
+}>;
+
+
+export type TopicFindByIdQuery = { __typename?: 'Query', topicFindById?: { __typename?: 'Topic', name: string, relatedSearches?: Array<string | null> | null, _id: any, createdAt?: any | null, updatedAt?: any | null, organicCount?: number | null, peopleAlsoAskCount?: number | null, organic?: Array<{ __typename?: 'TopicOrganic', title: string, link: string, snippet: string, date?: string | null, scraped?: string | null } | null> | null, peopleAlsoAsk?: Array<{ __typename?: 'TopicPeopleAlsoAsk', question: string, snippet: string, title: string, link: string } | null> | null } | null };
 
 
 export const TopicCreateOneDocument = gql`
@@ -191,3 +204,57 @@ export function useTopicFindAllLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type TopicFindAllQueryHookResult = ReturnType<typeof useTopicFindAllQuery>;
 export type TopicFindAllLazyQueryHookResult = ReturnType<typeof useTopicFindAllLazyQuery>;
 export type TopicFindAllQueryResult = Apollo.QueryResult<TopicFindAllQuery, TopicFindAllQueryVariables>;
+export const TopicFindByIdDocument = gql`
+    query TopicFindById($topicFindByIdId: MongoID!) {
+  topicFindById(id: $topicFindByIdId) {
+    name
+    organic {
+      title
+      link
+      snippet
+      date
+      scraped
+    }
+    peopleAlsoAsk {
+      question
+      snippet
+      title
+      link
+    }
+    relatedSearches
+    _id
+    createdAt
+    updatedAt
+    organicCount
+    peopleAlsoAskCount
+  }
+}
+    `;
+
+/**
+ * __useTopicFindByIdQuery__
+ *
+ * To run a query within a React component, call `useTopicFindByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTopicFindByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTopicFindByIdQuery({
+ *   variables: {
+ *      topicFindByIdId: // value for 'topicFindByIdId'
+ *   },
+ * });
+ */
+export function useTopicFindByIdQuery(baseOptions: Apollo.QueryHookOptions<TopicFindByIdQuery, TopicFindByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TopicFindByIdQuery, TopicFindByIdQueryVariables>(TopicFindByIdDocument, options);
+      }
+export function useTopicFindByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TopicFindByIdQuery, TopicFindByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TopicFindByIdQuery, TopicFindByIdQueryVariables>(TopicFindByIdDocument, options);
+        }
+export type TopicFindByIdQueryHookResult = ReturnType<typeof useTopicFindByIdQuery>;
+export type TopicFindByIdLazyQueryHookResult = ReturnType<typeof useTopicFindByIdLazyQuery>;
+export type TopicFindByIdQueryResult = Apollo.QueryResult<TopicFindByIdQuery, TopicFindByIdQueryVariables>;

@@ -34,6 +34,21 @@ TopicTC.addResolver({
 })
 
 TopicTC.addResolver({
+  kind: 'query',
+  name: 'topicFindById',
+  type: TopicTC,
+  args: {
+    id: 'MongoID!',
+  },
+  resolve: async ({ args }) => {
+    const { id } = args
+    const topic = await TopicModel.findById(id)
+    if (!topic) GQLErrorHandler('Topic not found', 'NOT_FOUND', { location: 'topicFindById' })
+    return topic
+  },
+})
+
+TopicTC.addResolver({
   kind: 'mutation',
   name: 'topicCreateOne',
   type: TopicTC,
@@ -155,6 +170,7 @@ TopicTC.addResolver({
 
 const queries = {
   topicFindAll: TopicTC.getResolver('topicFindAll'),
+  topicFindById: TopicTC.getResolver('topicFindById'),
 }
 const mutations = {
   topicCreateOne: TopicTC.getResolver('topicCreateOne'),

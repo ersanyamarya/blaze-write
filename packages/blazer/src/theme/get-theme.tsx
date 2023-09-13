@@ -1,4 +1,4 @@
-import { createTheme, PaletteMode, responsiveFontSizes, Theme } from '@mui/material'
+import { colors, createTheme, PaletteMode, responsiveFontSizes, Theme } from '@mui/material'
 
 const fontFamily = ['Fira Code', 'Arial'].join(',')
 const getTheme = (mode: PaletteMode): Theme => {
@@ -6,12 +6,8 @@ const getTheme = (mode: PaletteMode): Theme => {
     createTheme({
       palette: {
         mode,
-        primary: {
-          main: '#99cc00',
-        },
-        secondary: {
-          main: '#CC9900',
-        },
+        primary: colors.blueGrey,
+        secondary: colors.teal,
         background: {
           default: mode === 'light' ? '#f5f5f5' : '#121212',
           paper: mode === 'light' ? '#fcfcfc' : '#1c1c1c',
@@ -30,13 +26,32 @@ const getTheme = (mode: PaletteMode): Theme => {
         },
         MuiAppBar: {
           defaultProps: {
-            color: 'secondary',
+            color: 'primary',
             position: 'static',
           },
           styleOverrides: {
             root: {
               boxShadow: 'none',
               color: '#fcfcfc',
+            },
+          },
+        },
+        MuiDrawer: {
+          defaultProps: {
+            variant: 'permanent',
+            anchor: 'left',
+            color: 'primary',
+          },
+          styleOverrides: {
+            root: {
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'red',
+            },
+            paper: {
+              width: 'inherit',
+              height: 'inherit',
+              backgroundColor: 'primary.dark',
             },
           },
         },

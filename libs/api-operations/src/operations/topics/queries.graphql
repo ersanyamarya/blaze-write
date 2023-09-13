@@ -7,3 +7,28 @@ query TopicFindAll($sort: EnumSortOrder) {
     peopleAlsoAskCount
   }
 }
+
+query TopicFindById($topicFindByIdId: MongoID!) {
+  topicFindById(id: $topicFindByIdId) {
+    name
+    organic {
+      title
+      link
+      snippet
+      date
+      scraped
+    }
+    peopleAlsoAsk {
+      question
+      snippet
+      title
+      link
+    }
+    relatedSearches
+    _id
+    createdAt
+    updatedAt
+    organicCount
+    peopleAlsoAskCount
+  }
+}

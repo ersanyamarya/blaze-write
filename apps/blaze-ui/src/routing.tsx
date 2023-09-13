@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
 import { NavBarLayout } from './templates'
 
-import { Dashboard, NotFound } from './pages'
+import { Dashboard, NotFound, Topic } from './pages'
 
 function LazyLoaded({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<CircularProgress size={256} thickness={2} />}>{children}</Suspense>
@@ -22,7 +22,7 @@ export default function Routing() {
         >
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/topic/:topicId" element={<Dashboard />} />
+          <Route path="/topic/:topicId" element={<Topic />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
