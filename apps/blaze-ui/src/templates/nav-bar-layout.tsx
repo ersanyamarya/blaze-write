@@ -13,7 +13,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material'
-import { Frame, InboxIcon, LucideSpace, MailIcon, PlusCircleIcon, Space } from 'lucide-react'
+import { Frame, PlusCircleIcon } from 'lucide-react'
 import { NavLink, useLocation, useOutlet } from 'react-router-dom'
 const drawerWidth = 320
 const pathRegexp = (route: string): RegExp => new RegExp(`${route}.*`)
@@ -21,7 +21,7 @@ export function NavBarLayout() {
   const theme = useTheme()
   const { data, loading, error } = useTopicFindAllQuery({
     variables: {
-      sort: EnumSortOrder.Desc,
+      sort: EnumSortOrder.Asc,
     },
   })
   const location = useLocation()
@@ -42,7 +42,6 @@ export function NavBarLayout() {
       <Drawer
         sx={{
           width: drawerWidth,
-          flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
@@ -102,7 +101,12 @@ export function NavBarLayout() {
           </ListItem>
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+        }}
+      >
         {outlet}
       </Box>
     </Box>

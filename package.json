@@ -15,6 +15,7 @@
     "@ersanyamarya/common-node-utils": "^0.0.9",
     "@ersanyamarya/essential-server-utils": "^0.0.10",
     "@mui/material": "^5.14.8",
+    "@mui/x-data-grid": "^6.13.0",
     "@swc/helpers": "~0.5.0",
     "axios": "^1.5.0",
     "graphql-compose": "^9.0.10",
