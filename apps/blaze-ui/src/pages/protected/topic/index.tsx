@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Organic } from './organic'
 import { Question } from './people-asked'
+import { RelatedSearch } from './related-searches'
 
 const drawerWidth = 320
 export function Topic() {
@@ -65,7 +66,9 @@ export function Topic() {
           )}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-          Item Three
+          {data?.topicFindById?.relatedSearches && data?.topicFindById?.relatedSearches.length && (
+            <RelatedSearch relatedSearch={data?.topicFindById?.relatedSearches} topicId={topicID} />
+          )}
         </CustomTabPanel>
       </Stack>
     </>
