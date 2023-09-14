@@ -1,10 +1,21 @@
-import { serperAIConfig } from '@blaze-write/config'
+import { openAIConfig, serperAIConfig } from '@blaze-write/config'
 import { Topic, TopicModel } from '@blaze-write/mongo-db'
 import { GQLErrorHandler } from '@ersanyamarya/apollo-graphql-helper'
-import { scrapeDataFromUrl, searchOnGoogle } from '@ersanyamarya/codename-langchain'
+import { getSummaryFromTextAndObjective, scrapeDataFromUrl, searchOnGoogle } from '@ersanyamarya/codename-langchain'
 import { schemaComposer } from 'graphql-compose'
 import { composeMongoose } from 'graphql-compose-mongoose'
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { OpenAI } from 'langchain/llms/openai'
 const TopicTC = composeMongoose(TopicModel, {})
+
+const model = new OpenAI({
+  openAIApiKey: openAIConfig.apiKey,
+  temperature: 0.1,
+})
+
+const embeddings = new OpenAIEmbeddings({
+  openAIApiKey: openAIConfig.apiKey,
+})
 
 TopicTC.addFields({
   organicCount: {
@@ -182,25 +193,28 @@ TopicTC.addResolver({
     const { id, indexes } = args
     const topic = await TopicModel.findById(id)
     if (!topic) GQLErrorHandler('Topic not found', 'NOT_FOUND', { location: 'topicScrapeLinks' })
-    const organic = topic.organic.filter((_, index) => indexes.includes(index))
+    const newOrganic = (await Promise.all(
+      topic.organic.map(async (item, index) => {
+        if (indexes.includes(index)) {
+          // if (item.scraped) return item
 
-    const scrapedData = await Promise.all(
-      organic.map(async o => {
-        if (o.scraped) return o.scraped
-        else return await scrapeDataFromUrl(o.link)
+          const scraped = await scrapeDataFromUrl(item.link)
+          const summary = await getSummaryFromTextAndObjective(scraped, {
+            objective: topic.name,
+            question: topic.peopleAlsoAsk.map(item => item.title).join('\n'),
+            model,
+            embeddings,
+          })
+          return {
+            ...item,
+            scraped: summary,
+          }
+        } else return item
       })
-    )
+    )) as Topic['organic']
+    topic.organic = newOrganic
 
-    const organicWithScrapedData = organic.map((item, index) => {
-      item.scraped = scrapedData[index]
-      return item
-    })
-    topic.organic = topic.organic.map((item, index) => {
-      if (indexes.includes(index)) return organicWithScrapedData.find(o => o.link === item.link)
-      return item
-    })
     await topic.save()
-    return topic
   },
 })
 

@@ -7,8 +7,8 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { HNSWLib } from 'langchain/vectorstores/hnswlib'
 
 const textSplitter = new RecursiveCharacterTextSplitter({
-  chunkSize: 1500,
-  chunkOverlap: 100,
+  chunkSize: 500,
+  chunkOverlap: 50,
   separators: ['\n', ' ', '.', ',', ';', ':', '!', '?', '(', ')', '[', ']', '{', '}', '"', "'"],
   keepSeparator: false,
 })

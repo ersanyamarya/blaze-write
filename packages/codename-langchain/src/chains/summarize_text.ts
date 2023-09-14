@@ -1,12 +1,13 @@
 import { logger } from '@ersanyamarya/common-node-utils'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { OpenAI } from 'langchain/llms/openai'
-import { getRetrievalChain } from '../utils'
 import { PromptTemplate } from 'langchain/prompts'
+import { getRetrievalChain } from '../utils'
 
 const summarizeTemplatePrompt = `I want the following document to be summarized with context: {objective}.
-The summary should be at least 200 words long.
-Additionally, I want to find the following information in the document:
+The summary should be at least 500 words long.
+Don't skip any important details. Keep the names of any people, places, things or companies mentioned in the document.
+Importantly, Try to answer the following question in the summary:
 {question}
 `
 const promptTemplate = new PromptTemplate({
@@ -28,7 +29,6 @@ export async function getSummaryFromTextAndObjective(
   logger.info('----------------- Summarize: Starting ----------------- ')
   const chain = await getRetrievalChain(model, text, embeddings)
   const query = await promptTemplate.format({ objective, question })
-
   const res = await chain.call({
     query,
   })
