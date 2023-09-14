@@ -21,7 +21,7 @@ export function Topic() {
   })
 
   if (loading) return <Typography variant="h1"> Loading... </Typography>
-  if (error) return <Typography variant="h1"> Error! </Typography>
+  if (error || !topicID) return <Typography variant="h1"> Error! </Typography>
 
   return (
     <>
@@ -55,7 +55,7 @@ export function Topic() {
 
         <CustomTabPanel value={value} index={0}>
           {data?.topicFindById?.organic && data?.topicFindById?.organic.length && (
-            <Organic topic={data?.topicFindById?.organic as TopicOrganic[]} />
+            <Organic organicLinks={data?.topicFindById?.organic as TopicOrganic[]} topicId={topicID} />
           )}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>

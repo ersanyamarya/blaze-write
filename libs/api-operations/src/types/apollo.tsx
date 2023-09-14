@@ -117,6 +117,15 @@ export type TopicCreateOneMutationVariables = Exact<{
 
 export type TopicCreateOneMutation = { __typename?: 'Mutation', topicCreateOne?: { __typename?: 'Topic', _id: any } | null };
 
+export type TopicDeleteResourceMutationVariables = Exact<{
+  topicDeleteResourceId: Scalars['MongoID']['input'];
+  indexes: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+  resourceType?: InputMaybe<EnumResourceType>;
+}>;
+
+
+export type TopicDeleteResourceMutation = { __typename?: 'Mutation', topicDeleteResource?: { __typename?: 'Topic', _id: any } | null };
+
 export type TopicFindAllQueryVariables = Exact<{
   sort?: InputMaybe<EnumSortOrder>;
 }>;
@@ -165,6 +174,45 @@ export function useTopicCreateOneMutation(baseOptions?: Apollo.MutationHookOptio
 export type TopicCreateOneMutationHookResult = ReturnType<typeof useTopicCreateOneMutation>;
 export type TopicCreateOneMutationResult = Apollo.MutationResult<TopicCreateOneMutation>;
 export type TopicCreateOneMutationOptions = Apollo.BaseMutationOptions<TopicCreateOneMutation, TopicCreateOneMutationVariables>;
+export const TopicDeleteResourceDocument = gql`
+    mutation TopicDeleteResource($topicDeleteResourceId: MongoID!, $indexes: [Int!]!, $resourceType: EnumResourceType) {
+  topicDeleteResource(
+    id: $topicDeleteResourceId
+    indexes: $indexes
+    resourceType: $resourceType
+  ) {
+    _id
+  }
+}
+    `;
+export type TopicDeleteResourceMutationFn = Apollo.MutationFunction<TopicDeleteResourceMutation, TopicDeleteResourceMutationVariables>;
+
+/**
+ * __useTopicDeleteResourceMutation__
+ *
+ * To run a mutation, you first call `useTopicDeleteResourceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTopicDeleteResourceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [topicDeleteResourceMutation, { data, loading, error }] = useTopicDeleteResourceMutation({
+ *   variables: {
+ *      topicDeleteResourceId: // value for 'topicDeleteResourceId'
+ *      indexes: // value for 'indexes'
+ *      resourceType: // value for 'resourceType'
+ *   },
+ * });
+ */
+export function useTopicDeleteResourceMutation(baseOptions?: Apollo.MutationHookOptions<TopicDeleteResourceMutation, TopicDeleteResourceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<TopicDeleteResourceMutation, TopicDeleteResourceMutationVariables>(TopicDeleteResourceDocument, options);
+      }
+export type TopicDeleteResourceMutationHookResult = ReturnType<typeof useTopicDeleteResourceMutation>;
+export type TopicDeleteResourceMutationResult = Apollo.MutationResult<TopicDeleteResourceMutation>;
+export type TopicDeleteResourceMutationOptions = Apollo.BaseMutationOptions<TopicDeleteResourceMutation, TopicDeleteResourceMutationVariables>;
 export const TopicFindAllDocument = gql`
     query TopicFindAll($sort: EnumSortOrder) {
   topicFindAll(sort: $sort) {

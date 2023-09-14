@@ -1,11 +1,12 @@
-import { TopicOrganic } from '@blaze-write/api-operations'
-import { Box, IconButton, Link, Stack, Typography, styled } from '@mui/material'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { BinaryIcon, Bitcoin, ExternalLink, FolderKanban, Linkedin, PencilLine, PlusCircleIcon, Trash2 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { EnumResourceType, TopicOrganic, useTopicDeleteResourceMutation } from '@blaze-write/api-operations'
+import { Box, Button, IconButton, Stack, Tooltip, Typography, styled } from '@mui/material'
+import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
+import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
 interface CustomTabPanelProps {
-  topic: TopicOrganic[]
+  organicLinks: TopicOrganic[]
+  topicId: string
 }
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -15,37 +16,61 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }))
 
-export function Organic({ topic }: CustomTabPanelProps) {
+export function Organic({ organicLinks, topicId }: CustomTabPanelProps) {
+  const [deleteOrganic, { loading }] = useTopicDeleteResourceMutation({
+    refetchQueries: ['TopicFindById'],
+    onCompleted: () => {
+      setRowSelectionModel([])
+    },
+  })
+  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
   const columns: GridColDef[] = [
-    { field: 'title', headerName: 'Title', flex: 5 },
+    {
+      field: 'title',
+      headerName: 'Title',
+      flex: 5,
+      sortable: false,
+      renderCell: params => (
+        <Tooltip title={params.row.snippet} placement="top-start" arrow>
+          <Typography variant="body2" noWrap>
+            {params.row.title}
+          </Typography>
+        </Tooltip>
+      ),
+    },
     {
       field: 'actions',
       headerName: 'Actions',
       flex: 1,
+      sortable: false,
       renderCell: params => (
         <Stack direction="row" justifyContent="center" spacing={1} alignItems="center" width={'100%'}>
           <IconButton aria-label="edit">
             <FolderKanban />
           </IconButton>
-          <IconButton aria-label="edit" onClick={() => window.open(params.row.link, '_blank')}>
-            <ExternalLink />
-          </IconButton>
+          <Tooltip title={params.row.link} placement="left-start" arrow>
+            <IconButton aria-label="edit" onClick={() => window.open(params.row.link, '_blank')}>
+              <ExternalLink />
+            </IconButton>
+          </Tooltip>
         </Stack>
       ),
     },
   ]
 
-  const rows = topic.map((organic, index) => {
+  const rows = organicLinks.map((organic, index) => {
     return {
-      id: organic?.title,
-      number: index,
+      id: index,
       title: organic?.title,
       link: organic?.link,
+      snippet: organic?.snippet,
     }
   })
   return (
-    <Box sx={{ height: '100%', width: 'calc(100vw - 362px)' }}>
+    <Box sx={{ width: 'calc(100vw - 362px)' }}>
       <StyledDataGrid
+        loading={loading}
+        autoHeight
         rows={rows}
         columns={columns}
         initialState={{
@@ -64,33 +89,48 @@ export function Organic({ topic }: CustomTabPanelProps) {
         disableColumnSelector
         showCellVerticalBorder
         showColumnVerticalBorder
+        onRowSelectionModelChange={newRowSelectionModel => {
+          setRowSelectionModel(newRowSelectionModel)
+        }}
+        rowSelectionModel={rowSelectionModel}
+        slots={{
+          toolbar: () => (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                width: '100%',
+                height: '3rem',
+              }}
+            >
+              {rowSelectionModel.length > 0 && (
+                <Button
+                  variant="outlined"
+                  startIcon={<Trash2 />}
+                  color="error"
+                  onClick={() => {
+                    deleteOrganic({
+                      variables: {
+                        resourceType: EnumResourceType.Organic,
+                        topicDeleteResourceId: topicId,
+                        indexes: rowSelectionModel as number[],
+                      },
+                    })
+                  }}
+                >
+                  Remove selected links
+                </Button>
+              )}
+            </Box>
+          ),
+          noRowsOverlay: () => <Box> No organic links found. Please add some organic links to this topic.</Box>,
+        }}
+        slotProps={{
+          toolbar: {},
+        }}
       />
-    </Box>
-  )
-}
-
-interface OrganicLinkCardProps {
-  index: number
-  title: string
-  link: string
-  snippet: string
-  date?: string | null
-}
-function OrganicLinkCard({ index, title, link, snippet, date }: OrganicLinkCardProps) {
-  return (
-    <Box
-      sx={{
-        width: '72vw',
-        padding: '0.15rem 1rem',
-        margin: '0rem',
-        boxSizing: 'border-box',
-      }}
-    >
-      <Link href={link} target="_blank" rel="noopener noreferrer">
-        <Typography variant="h6" gutterBottom>
-          {index} - {title}
-        </Typography>
-      </Link>
     </Box>
   )
 }

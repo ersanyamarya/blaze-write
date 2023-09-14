@@ -3,3 +3,9 @@ mutation TopicCreateOne($name: String!) {
     _id
   }
 }
+
+mutation TopicDeleteResource($topicDeleteResourceId: MongoID!, $indexes: [Int!]!, $resourceType: EnumResourceType) {
+  topicDeleteResource(id: $topicDeleteResourceId, indexes: $indexes, resourceType: $resourceType) {
+    _id
+  }
+}
