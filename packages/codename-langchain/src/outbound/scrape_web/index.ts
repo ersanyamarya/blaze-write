@@ -1,3 +1,4 @@
+import { logger } from '@ersanyamarya/common-node-utils'
 import { Readability } from '@mozilla/readability'
 import { JSDOM } from 'jsdom'
 import puppeteer from 'puppeteer'
@@ -7,6 +8,8 @@ const isLinkYoutube = (link: string) => {
 }
 
 async function scrapeDataFromUrl(url: string): Promise<string> {
+  logger.info('----------------- Scrape: Starting ----------------- ')
+  logger.info(`Scraping ${url}`)
   if (isLinkYoutube(url)) {
     const transcript = await YoutubeTranscript.fetchTranscript(url)
     return transcript.map(t => t.text).join(' ')
@@ -25,6 +28,7 @@ async function scrapeDataFromUrl(url: string): Promise<string> {
     const reader = new Readability(doc.window.document)
     const article = reader.parse().textContent
 
+    logger.info('----------------- Scrape: Done ----------------- ')
     return article.replace(/\s\s+/g, ' ').replace(/\n/g, ' ').replace(/\t/g, ' ').replace(/\r/g, ' ').toString()
   }
 }

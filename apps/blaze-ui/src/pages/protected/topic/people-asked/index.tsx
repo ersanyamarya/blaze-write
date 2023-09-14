@@ -47,9 +47,6 @@ export function Question({ questions, topicId }: QuestionTabPanelProps) {
       sortable: false,
       renderCell: params => (
         <Stack direction="row" justifyContent="center" spacing={1} alignItems="center" width={'100%'}>
-          <IconButton aria-label="edit">
-            <FolderKanban />
-          </IconButton>
           <Tooltip title={params.row.link} placement="left-start" arrow>
             <IconButton aria-label="edit" onClick={() => window.open(params.row.link, '_blank')}>
               <ExternalLink />

@@ -182,7 +182,7 @@ interface ScrapedDataDialogProps {
 export function ScrapedDataDialog({ open, handleClose, title, scrapedData }: ScrapedDataDialogProps) {
   return (
     <Dialog
-      fullScreen
+      maxWidth="md"
       open={open}
       onClose={handleClose}
       aria-labelledby="scraped-data-dialog-title"
