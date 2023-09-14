@@ -19,14 +19,14 @@ const drawerWidth = 320
 const pathRegexp = (route: string): RegExp => new RegExp(`${route}.*`)
 export function NavBarLayout() {
   const theme = useTheme()
+  const location = useLocation()
+  const outlet = useOutlet()
+
   const { data, loading, error } = useTopicFindAllQuery({
     variables: {
       sort: EnumSortOrder.Asc,
     },
   })
-  const location = useLocation()
-  const outlet = useOutlet()
-
   if (loading) return <Typography variant="h1"> Loading... </Typography>
   if (error) return <Typography variant="h1"> Error! </Typography>
 
@@ -55,8 +55,20 @@ export function NavBarLayout() {
             </Typography>
           </Toolbar>
         </AppBar>
-        <Divider />
+
         <List>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>{<PlusCircleIcon />}</ListItemIcon>
+              <ListItemText primary="Add new Topic" />
+            </ListItemButton>
+          </ListItem>
+          <Divider
+            sx={{
+              height: '1rem',
+              width: '100%',
+            }}
+          />
           {data?.topicFindAll?.map((topic, index) => {
             const isActive = location.pathname.match(pathRegexp(`/topic/${topic?._id}`))
             return (
@@ -85,20 +97,6 @@ export function NavBarLayout() {
               </ListItem>
             )
           })}
-        </List>
-        <Divider />
-        <Box
-          sx={{
-            flex: 1,
-          }}
-        />
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{<PlusCircleIcon />}</ListItemIcon>
-              <ListItemText primary="Add new Topic" />
-            </ListItemButton>
-          </ListItem>
         </List>
       </Drawer>
       <Box

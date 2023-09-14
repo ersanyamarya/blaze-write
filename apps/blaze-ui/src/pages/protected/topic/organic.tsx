@@ -1,7 +1,8 @@
 import { TopicOrganic } from '@blaze-write/api-operations'
 import { Box, IconButton, Link, Stack, Typography, styled } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { BinaryIcon, Bitcoin, ExternalLink, Linkedin, PencilLine, PlusCircleIcon, Trash2 } from 'lucide-react'
+import { BinaryIcon, Bitcoin, ExternalLink, FolderKanban, Linkedin, PencilLine, PlusCircleIcon, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 interface CustomTabPanelProps {
   topic: TopicOrganic[]
@@ -14,41 +15,30 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }))
 
-const columns: GridColDef[] = [
-  // { field: 'number', headerName: '#', flex: 1 },
-  { field: 'title', headerName: 'Title', flex: 5 },
-  // {
-  //   field: 'link',
-  //   headerName: 'Link',
-  //   flex: 5,
-  //   renderCell: params => (
-  //     <Link href={params.value as string} target="_blank" rel="noopener noreferrer" variant="caption">
-  //       {params.value}
-  //     </Link>
-  //   ),
-  // },
-  {
-    field: 'actions',
-    headerName: 'Actions',
-    flex: 1,
-    renderCell: params => (
-      <Stack direction="row" justifyContent="center" spacing={1} alignItems="center" width={'100%'}>
-        <IconButton aria-label="edit">
-          <Trash2 />
-        </IconButton>
-        <IconButton aria-label="edit">
-          <ExternalLink />
-        </IconButton>
-      </Stack>
-    ),
-  },
-]
-
 export function Organic({ topic }: CustomTabPanelProps) {
+  const columns: GridColDef[] = [
+    { field: 'title', headerName: 'Title', flex: 5 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      flex: 1,
+      renderCell: params => (
+        <Stack direction="row" justifyContent="center" spacing={1} alignItems="center" width={'100%'}>
+          <IconButton aria-label="edit">
+            <FolderKanban />
+          </IconButton>
+          <IconButton aria-label="edit" onClick={() => window.open(params.row.link, '_blank')}>
+            <ExternalLink />
+          </IconButton>
+        </Stack>
+      ),
+    },
+  ]
+
   const rows = topic.map((organic, index) => {
     return {
       id: organic?.title,
-      number: index + 1,
+      number: index,
       title: organic?.title,
       link: organic?.link,
     }
@@ -62,6 +52,7 @@ export function Organic({ topic }: CustomTabPanelProps) {
           pagination: {
             paginationModel: {
               pageSize: 15,
+              page: 0,
             },
           },
         }}
