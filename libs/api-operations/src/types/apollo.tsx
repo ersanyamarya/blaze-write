@@ -131,6 +131,12 @@ export type TopicStartGoogleSearchMutation = {
   topicStartGoogleSearch?: { __typename?: 'Topic'; _id: any } | null
 }
 
+export type TopicDeleteOneMutationVariables = Exact<{
+  topicDeleteOneId: Scalars['MongoID']['input']
+}>
+
+export type TopicDeleteOneMutation = { __typename?: 'Mutation'; topicDeleteOne?: { __typename?: 'Topic'; _id: any } | null }
+
 export type TopicFindAllQueryVariables = Exact<{
   sort?: InputMaybe<EnumSortOrder>
 }>
@@ -308,6 +314,44 @@ export type TopicStartGoogleSearchMutationResult = Apollo.MutationResult<TopicSt
 export type TopicStartGoogleSearchMutationOptions = Apollo.BaseMutationOptions<
   TopicStartGoogleSearchMutation,
   TopicStartGoogleSearchMutationVariables
+>
+export const TopicDeleteOneDocument = gql`
+  mutation TopicDeleteOne($topicDeleteOneId: MongoID!) {
+    topicDeleteOne(id: $topicDeleteOneId) {
+      _id
+    }
+  }
+`
+export type TopicDeleteOneMutationFn = Apollo.MutationFunction<TopicDeleteOneMutation, TopicDeleteOneMutationVariables>
+
+/**
+ * __useTopicDeleteOneMutation__
+ *
+ * To run a mutation, you first call `useTopicDeleteOneMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTopicDeleteOneMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [topicDeleteOneMutation, { data, loading, error }] = useTopicDeleteOneMutation({
+ *   variables: {
+ *      topicDeleteOneId: // value for 'topicDeleteOneId'
+ *   },
+ * });
+ */
+export function useTopicDeleteOneMutation(
+  baseOptions?: Apollo.MutationHookOptions<TopicDeleteOneMutation, TopicDeleteOneMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<TopicDeleteOneMutation, TopicDeleteOneMutationVariables>(TopicDeleteOneDocument, options)
+}
+export type TopicDeleteOneMutationHookResult = ReturnType<typeof useTopicDeleteOneMutation>
+export type TopicDeleteOneMutationResult = Apollo.MutationResult<TopicDeleteOneMutation>
+export type TopicDeleteOneMutationOptions = Apollo.BaseMutationOptions<
+  TopicDeleteOneMutation,
+  TopicDeleteOneMutationVariables
 >
 export const TopicFindAllDocument = gql`
   query TopicFindAll($sort: EnumSortOrder) {

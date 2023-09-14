@@ -14,16 +14,16 @@ import {
   useTheme,
 } from '@mui/material'
 import { Frame, PlusCircleIcon } from 'lucide-react'
-import { NavLink, useLocation, useOutlet } from 'react-router-dom'
-import AddTopicDialog from './components/add-topic'
 import { useState } from 'react'
-import addTopic from './components/add-topic'
+import { NavLink, useLocation, useNavigate, useOutlet } from 'react-router-dom'
+import AddTopicDialog from './components/add-topic'
 const drawerWidth = 320
 const pathRegexp = (route: string): RegExp => new RegExp(`${route}.*`)
 export function NavBarLayout() {
   const theme = useTheme()
   const location = useLocation()
   const outlet = useOutlet()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [currentTopic, setCurrentTopic] = useState<string>('apple')
   const { data, loading, error } = useTopicFindAllQuery({
@@ -34,6 +34,9 @@ export function NavBarLayout() {
 
   const [addTopic] = useTopicCreateOneMutation({
     refetchQueries: ['TopicFindAll'],
+    onCompleted: data => {
+      navigate(`/topic/${data.topicCreateOne?._id}`)
+    },
   })
   const handleClose = () => {
     setOpen(false)

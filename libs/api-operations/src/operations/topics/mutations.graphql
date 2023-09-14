@@ -15,3 +15,9 @@ mutation TopicStartGoogleSearch($topicStartGoogleSearchId: MongoID!, $alternateT
     _id
   }
 }
+
+mutation TopicDeleteOne($topicDeleteOneId: MongoID!) {
+  topicDeleteOne(id: $topicDeleteOneId) {
+    _id
+  }
+}

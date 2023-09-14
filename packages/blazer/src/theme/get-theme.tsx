@@ -35,7 +35,22 @@ const getTheme = (mode: PaletteMode): Theme => {
         styleOverrides: {
           root: {
             boxShadow: 'none',
-            color: '#fcfcfc',
+            '& *': {
+              color: theme.palette.primary.contrastText,
+            },
+          },
+        },
+      },
+      MuiToolbar: {
+        defaultProps: {
+          variant: 'regular',
+        },
+        styleOverrides: {
+          root: {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           },
         },
       },

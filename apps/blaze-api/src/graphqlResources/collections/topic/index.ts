@@ -79,6 +79,7 @@ TopicTC.addResolver({
     const topic = await TopicModel.findById(id)
     if (!topic) GQLErrorHandler('Topic not found', 'NOT_FOUND', { location: 'topicStartGoogleSearch' })
     const searchKey = alternateTopic || topic.name
+
     const searchResult1 = await searchOnGoogle(searchKey, {
       apiKey: serperAIConfig.apiKey,
       gl: 'us',
@@ -90,10 +91,11 @@ TopicTC.addResolver({
       youtube: true,
     })
 
+    // combine the results and handle the case when one of the results is undefined
     const searchResult = {
-      organic: [...searchResult1.organic, ...searchResult2.organic],
-      peopleAlsoAsk: [...searchResult1.peopleAlsoAsk, ...searchResult2.peopleAlsoAsk],
-      relatedSearches: [...searchResult1.relatedSearches, ...searchResult2.relatedSearches],
+      organic: [...(searchResult1?.organic || []), ...(searchResult2?.organic || [])],
+      peopleAlsoAsk: [...(searchResult1?.peopleAlsoAsk || []), ...(searchResult2?.peopleAlsoAsk || [])],
+      relatedSearches: [...(searchResult1?.relatedSearches || []), ...(searchResult2?.relatedSearches || [])],
     }
 
     if (!searchResult || !searchResult.organic)

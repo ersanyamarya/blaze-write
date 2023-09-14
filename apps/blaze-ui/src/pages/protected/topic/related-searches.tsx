@@ -11,6 +11,7 @@ interface RelatedSearchesTabPanelProps {
 
 export function RelatedSearch({ relatedSearch, topicId }: RelatedSearchesTabPanelProps) {
   const { register, selectedRows, setSelectedRows } = useDataGrid()
+
   const [deleteRelatedSearch, { loading }] = useTopicDeleteResourceMutation({
     refetchQueries: ['TopicFindById'],
     onCompleted: () => {
@@ -84,7 +85,7 @@ export function RelatedSearch({ relatedSearch, topicId }: RelatedSearchesTabPane
                     })
                   }}
                 >
-                  Remove selected questions
+                  Remove selected related searches
                 </Button>
               )}
             </Box>
