@@ -1,8 +1,8 @@
 import { colors, createTheme, PaletteMode, responsiveFontSizes, Theme } from '@mui/material'
-
+import type {} from '@mui/x-data-grid/themeAugmentation'
 const fontFamily = ['Fira Code', 'Arial'].join(',')
 const getTheme = (mode: PaletteMode): Theme => {
-  return responsiveFontSizes(
+  let theme = responsiveFontSizes(
     createTheme({
       palette: {
         mode,
@@ -16,61 +16,91 @@ const getTheme = (mode: PaletteMode): Theme => {
       typography: {
         fontFamily,
       },
-      components: {
-        MuiCssBaseline: {
-          styleOverrides: {
-            body: {
-              fontFamily,
-            },
-          },
-        },
-        MuiAppBar: {
-          defaultProps: {
-            color: 'primary',
-            position: 'static',
-          },
-          styleOverrides: {
-            root: {
-              boxShadow: 'none',
-              color: '#fcfcfc',
-            },
-          },
-        },
-        MuiDrawer: {
-          defaultProps: {
-            variant: 'permanent',
-            anchor: 'left',
-            color: 'primary',
-          },
-          styleOverrides: {
-            root: {
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'red',
-            },
-            paper: {
-              width: 'inherit',
-              height: 'inherit',
-              backgroundColor: 'primary.dark',
-            },
-          },
-        },
-        MuiTextField: {
-          defaultProps: {
-            variant: 'outlined',
-            InputLabelProps: {
-              shrink: true,
-            },
-          },
-          styleOverrides: {
-            root: {
-              marginTop: '1.2rem',
-            },
+    })
+  )
+  theme = createTheme(theme, {
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            fontFamily,
           },
         },
       },
-    })
-  )
+      MuiAppBar: {
+        defaultProps: {
+          color: 'primary',
+          position: 'static',
+        },
+        styleOverrides: {
+          root: {
+            boxShadow: 'none',
+            color: '#fcfcfc',
+          },
+        },
+      },
+      MuiDrawer: {
+        defaultProps: {
+          variant: 'permanent',
+          anchor: 'left',
+          color: 'primary',
+        },
+        styleOverrides: {
+          root: {
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'red',
+          },
+          paper: {
+            width: 'inherit',
+            height: 'inherit',
+            backgroundColor: 'primary.dark',
+          },
+        },
+      },
+      MuiTextField: {
+        defaultProps: {
+          variant: 'outlined',
+          InputLabelProps: {
+            shrink: true,
+          },
+        },
+        styleOverrides: {
+          root: {
+            marginTop: '1.2rem',
+          },
+        },
+      },
+      MuiDataGrid: {
+        defaultProps: {
+          autoHeight: true,
+          initialState: {
+            pagination: {
+              paginationModel: {
+                pageSize: 15,
+                page: 0,
+              },
+            },
+          },
+          pageSizeOptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+          checkboxSelection: true,
+          disableRowSelectionOnClick: true,
+          density: 'compact',
+          disableColumnMenu: true,
+          disableColumnSelector: true,
+          showCellVerticalBorder: true,
+          showColumnVerticalBorder: true,
+        },
+        styleOverrides: {
+          root: {},
+          columnHeader: {
+            backgroundColor: theme.palette.secondary.light,
+          },
+        },
+      },
+    },
+  })
+  return theme
 }
 
 export { getTheme, fontFamily }

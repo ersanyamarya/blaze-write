@@ -1,9 +1,10 @@
-import { TopicOrganic, useTopicFindByIdQuery } from '@blaze-write/api-operations'
+import { TopicOrganic, TopicPeopleAlsoAsk, useTopicFindByIdQuery } from '@blaze-write/api-operations'
 import { AppBar, Box, Link, Stack, Tab, Tabs, Toolbar, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import { useParams } from 'react-router-dom'
 import { Organic } from './organic'
+import { Question } from './people-asked'
 
 const drawerWidth = 320
 export function Topic() {
@@ -59,7 +60,9 @@ export function Topic() {
           )}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          Item Two
+          {data?.topicFindById?.peopleAlsoAsk && data?.topicFindById?.peopleAlsoAsk.length && (
+            <Question questions={data?.topicFindById?.peopleAlsoAsk as TopicPeopleAlsoAsk[]} topicId={topicID} />
+          )}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
           Item Three

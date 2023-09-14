@@ -1,18 +1,17 @@
-import { EnumResourceType, TopicOrganic, useTopicDeleteResourceMutation } from '@blaze-write/api-operations'
-import { Box, Button, IconButton, Stack, Tooltip, Typography, styled } from '@mui/material'
+import { EnumResourceType, TopicPeopleAlsoAsk, useTopicDeleteResourceMutation } from '@blaze-write/api-operations'
+import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
 import { useDataGrid } from '../../../hooks'
+import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
 
-interface OrganicTabPanelProps {
-  organicLinks: TopicOrganic[]
+interface QuestionTabPanelProps {
+  questions: TopicPeopleAlsoAsk[]
   topicId: string
 }
 
-export function Organic({ organicLinks, topicId }: OrganicTabPanelProps) {
+export function Question({ questions, topicId }: QuestionTabPanelProps) {
   const { register, selectedRows, setSelectedRows } = useDataGrid()
-
-  const [deleteOrganic, { loading }] = useTopicDeleteResourceMutation({
+  const [deleteQuestion, { loading }] = useTopicDeleteResourceMutation({
     refetchQueries: ['TopicFindById'],
     onCompleted: () => {
       setSelectedRows([])
@@ -20,17 +19,23 @@ export function Organic({ organicLinks, topicId }: OrganicTabPanelProps) {
   })
   const columns: GridColDef[] = [
     {
-      field: 'title',
-      headerName: 'Title',
+      field: 'question',
+      headerName: 'Question',
       flex: 5,
       sortable: false,
       renderCell: params => (
         <Tooltip title={params.row.snippet} placement="top-start" arrow>
           <Typography variant="body2" noWrap>
-            {params.row.title}
+            {params.row.question}
           </Typography>
         </Tooltip>
       ),
+    },
+    {
+      field: 'title',
+      headerName: 'Title',
+      flex: 5,
+      sortable: false,
     },
     {
       field: 'actions',
@@ -51,13 +56,13 @@ export function Organic({ organicLinks, topicId }: OrganicTabPanelProps) {
       ),
     },
   ]
-
-  const rows = organicLinks.map((organic, index) => {
+  const rows = questions.map((question, index) => {
     return {
       id: index,
-      title: organic?.title,
-      link: organic?.link,
-      snippet: organic?.snippet,
+      question: question?.question,
+      snippet: question?.snippet,
+      link: question?.link,
+      title: question?.title,
     }
   })
   return (
@@ -86,16 +91,16 @@ export function Organic({ organicLinks, topicId }: OrganicTabPanelProps) {
                   startIcon={<Trash2 />}
                   color="error"
                   onClick={() => {
-                    deleteOrganic({
+                    deleteQuestion({
                       variables: {
-                        resourceType: EnumResourceType.Organic,
+                        resourceType: EnumResourceType.PeopleAlsoAsk,
                         topicDeleteResourceId: topicId,
                         indexes: selectedRows,
                       },
                     })
                   }}
                 >
-                  Remove selected links
+                  Remove selected questions
                 </Button>
               )}
             </Box>
