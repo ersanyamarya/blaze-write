@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
 import * as Apollo from '@apollo/client'
+import { gql } from '@apollo/client'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -33,10 +33,17 @@ export enum EnumSortOrder {
 export type Mutation = {
   __typename?: 'Mutation'
   AdminTopicRemoveAll?: Maybe<Scalars['Boolean']['output']>
+  topicCopyQuestionToOrganic?: Maybe<Topic>
   topicCreateOne?: Maybe<Topic>
   topicDeleteOne?: Maybe<Topic>
   topicDeleteResource?: Maybe<Topic>
+  topicScrapeLinks?: Maybe<Topic>
   topicStartGoogleSearch?: Maybe<Topic>
+}
+
+export type MutationTopicCopyQuestionToOrganicArgs = {
+  id: Scalars['MongoID']['input']
+  indexes: Array<Scalars['Int']['input']>
 }
 
 export type MutationTopicCreateOneArgs = {
@@ -51,6 +58,11 @@ export type MutationTopicDeleteResourceArgs = {
   id: Scalars['MongoID']['input']
   indexes: Array<Scalars['Int']['input']>
   resourceType?: InputMaybe<EnumResourceType>
+}
+
+export type MutationTopicScrapeLinksArgs = {
+  id: Scalars['MongoID']['input']
+  indexes: Array<Scalars['Int']['input']>
 }
 
 export type MutationTopicStartGoogleSearchArgs = {
@@ -136,6 +148,26 @@ export type TopicDeleteOneMutationVariables = Exact<{
 }>
 
 export type TopicDeleteOneMutation = { __typename?: 'Mutation'; topicDeleteOne?: { __typename?: 'Topic'; _id: any } | null }
+
+export type TopicScrapeLinksMutationVariables = Exact<{
+  topicScrapeLinksId: Scalars['MongoID']['input']
+  indexes: Array<Scalars['Int']['input']> | Scalars['Int']['input']
+}>
+
+export type TopicScrapeLinksMutation = {
+  __typename?: 'Mutation'
+  topicScrapeLinks?: { __typename?: 'Topic'; _id: any } | null
+}
+
+export type TopicCopyQuestionToOrganicMutationVariables = Exact<{
+  topicCopyQuestionToOrganicId: Scalars['MongoID']['input']
+  indexes: Array<Scalars['Int']['input']> | Scalars['Int']['input']
+}>
+
+export type TopicCopyQuestionToOrganicMutation = {
+  __typename?: 'Mutation'
+  topicCopyQuestionToOrganic?: { __typename?: 'Topic'; _id: any } | null
+}
 
 export type TopicFindAllQueryVariables = Exact<{
   sort?: InputMaybe<EnumSortOrder>
@@ -352,6 +384,90 @@ export type TopicDeleteOneMutationResult = Apollo.MutationResult<TopicDeleteOneM
 export type TopicDeleteOneMutationOptions = Apollo.BaseMutationOptions<
   TopicDeleteOneMutation,
   TopicDeleteOneMutationVariables
+>
+export const TopicScrapeLinksDocument = gql`
+  mutation TopicScrapeLinks($topicScrapeLinksId: MongoID!, $indexes: [Int!]!) {
+    topicScrapeLinks(id: $topicScrapeLinksId, indexes: $indexes) {
+      _id
+    }
+  }
+`
+export type TopicScrapeLinksMutationFn = Apollo.MutationFunction<TopicScrapeLinksMutation, TopicScrapeLinksMutationVariables>
+
+/**
+ * __useTopicScrapeLinksMutation__
+ *
+ * To run a mutation, you first call `useTopicScrapeLinksMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTopicScrapeLinksMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [topicScrapeLinksMutation, { data, loading, error }] = useTopicScrapeLinksMutation({
+ *   variables: {
+ *      topicScrapeLinksId: // value for 'topicScrapeLinksId'
+ *      indexes: // value for 'indexes'
+ *   },
+ * });
+ */
+export function useTopicScrapeLinksMutation(
+  baseOptions?: Apollo.MutationHookOptions<TopicScrapeLinksMutation, TopicScrapeLinksMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<TopicScrapeLinksMutation, TopicScrapeLinksMutationVariables>(TopicScrapeLinksDocument, options)
+}
+export type TopicScrapeLinksMutationHookResult = ReturnType<typeof useTopicScrapeLinksMutation>
+export type TopicScrapeLinksMutationResult = Apollo.MutationResult<TopicScrapeLinksMutation>
+export type TopicScrapeLinksMutationOptions = Apollo.BaseMutationOptions<
+  TopicScrapeLinksMutation,
+  TopicScrapeLinksMutationVariables
+>
+export const TopicCopyQuestionToOrganicDocument = gql`
+  mutation TopicCopyQuestionToOrganic($topicCopyQuestionToOrganicId: MongoID!, $indexes: [Int!]!) {
+    topicCopyQuestionToOrganic(id: $topicCopyQuestionToOrganicId, indexes: $indexes) {
+      _id
+    }
+  }
+`
+export type TopicCopyQuestionToOrganicMutationFn = Apollo.MutationFunction<
+  TopicCopyQuestionToOrganicMutation,
+  TopicCopyQuestionToOrganicMutationVariables
+>
+
+/**
+ * __useTopicCopyQuestionToOrganicMutation__
+ *
+ * To run a mutation, you first call `useTopicCopyQuestionToOrganicMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTopicCopyQuestionToOrganicMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [topicCopyQuestionToOrganicMutation, { data, loading, error }] = useTopicCopyQuestionToOrganicMutation({
+ *   variables: {
+ *      topicCopyQuestionToOrganicId: // value for 'topicCopyQuestionToOrganicId'
+ *      indexes: // value for 'indexes'
+ *   },
+ * });
+ */
+export function useTopicCopyQuestionToOrganicMutation(
+  baseOptions?: Apollo.MutationHookOptions<TopicCopyQuestionToOrganicMutation, TopicCopyQuestionToOrganicMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<TopicCopyQuestionToOrganicMutation, TopicCopyQuestionToOrganicMutationVariables>(
+    TopicCopyQuestionToOrganicDocument,
+    options
+  )
+}
+export type TopicCopyQuestionToOrganicMutationHookResult = ReturnType<typeof useTopicCopyQuestionToOrganicMutation>
+export type TopicCopyQuestionToOrganicMutationResult = Apollo.MutationResult<TopicCopyQuestionToOrganicMutation>
+export type TopicCopyQuestionToOrganicMutationOptions = Apollo.BaseMutationOptions<
+  TopicCopyQuestionToOrganicMutation,
+  TopicCopyQuestionToOrganicMutationVariables
 >
 export const TopicFindAllDocument = gql`
   query TopicFindAll($sort: EnumSortOrder) {

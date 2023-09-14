@@ -1,4 +1,9 @@
-import { EnumResourceType, TopicOrganic, useTopicDeleteResourceMutation } from '@blaze-write/api-operations'
+import {
+  EnumResourceType,
+  TopicOrganic,
+  useTopicDeleteResourceMutation,
+  useTopicScrapeLinksMutation,
+} from '@blaze-write/api-operations'
 import {
   Box,
   Button,
@@ -14,8 +19,9 @@ import {
 } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
-import { useDataGrid } from '../../../hooks'
 import { useState } from 'react'
+import { StyledActionSection } from '../../../components/table-tool-bar-menu'
+import { useDataGrid } from '../../../hooks'
 
 interface OrganicTabPanelProps {
   organicLinks: TopicOrganic[]
@@ -53,6 +59,11 @@ export function Organic({ organicLinks, topicId }: OrganicTabPanelProps) {
       setSelectedRows([])
     },
   })
+
+  const [scrapeOrganic, { loading: loadingScrape }] = useTopicScrapeLinksMutation({
+    refetchQueries: ['TopicFindById'],
+  })
+
   const columns: GridColDef[] = [
     {
       field: 'title',
@@ -109,24 +120,13 @@ export function Organic({ organicLinks, topicId }: OrganicTabPanelProps) {
 
       <Box sx={{ width: 'calc(100vw - 362px)' }}>
         <DataGrid
-          loading={loading}
+          loading={loading || loadingScrape}
           rows={rows}
           columns={columns}
           {...register()}
           slots={{
             toolbar: () => (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                  alignItems: 'center',
-                  width: '100%',
-                  height: '3rem',
-                  backgroundColor: 'transparent',
-                  gap: '1rem',
-                }}
-              >
+              <StyledActionSection>
                 {selectedRows.length > 0 && (
                   <>
                     <Button
@@ -145,13 +145,24 @@ export function Organic({ organicLinks, topicId }: OrganicTabPanelProps) {
                     >
                       Remove selected links
                     </Button>
-                    {/* Scrape */}
-                    <Button variant="outlined" startIcon={<FolderKanban />} color="success">
+                    <Button
+                      variant="outlined"
+                      startIcon={<FolderKanban />}
+                      color="primary"
+                      onClick={() => {
+                        scrapeOrganic({
+                          variables: {
+                            topicScrapeLinksId: topicId,
+                            indexes: selectedRows,
+                          },
+                        })
+                      }}
+                    >
                       Scrape selected links
                     </Button>
                   </>
                 )}
-              </Box>
+              </StyledActionSection>
             ),
             noRowsOverlay: () => <Box> No organic links found. Please add some organic links to this topic.</Box>,
           }}
@@ -171,6 +182,7 @@ interface ScrapedDataDialogProps {
 export function ScrapedDataDialog({ open, handleClose, title, scrapedData }: ScrapedDataDialogProps) {
   return (
     <Dialog
+      fullScreen
       open={open}
       onClose={handleClose}
       aria-labelledby="scraped-data-dialog-title"

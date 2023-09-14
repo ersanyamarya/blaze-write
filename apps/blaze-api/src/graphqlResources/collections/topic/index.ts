@@ -1,7 +1,7 @@
 import { serperAIConfig } from '@blaze-write/config'
-import { TopicModel } from '@blaze-write/mongo-db'
+import { Topic, TopicModel } from '@blaze-write/mongo-db'
 import { GQLErrorHandler } from '@ersanyamarya/apollo-graphql-helper'
-import { searchOnGoogle } from '@ersanyamarya/codename-langchain'
+import { scrapeDataFromUrl, searchOnGoogle } from '@ersanyamarya/codename-langchain'
 import { schemaComposer } from 'graphql-compose'
 import { composeMongoose } from 'graphql-compose-mongoose'
 const TopicTC = composeMongoose(TopicModel, {})
@@ -170,6 +170,67 @@ TopicTC.addResolver({
   },
 })
 
+TopicTC.addResolver({
+  kind: 'mutation',
+  name: 'topicScrapeLinks',
+  type: TopicTC,
+  args: {
+    id: 'MongoID!',
+    indexes: '[Int!]!',
+  },
+  resolve: async ({ args }) => {
+    const { id, indexes } = args
+    const topic = await TopicModel.findById(id)
+    if (!topic) GQLErrorHandler('Topic not found', 'NOT_FOUND', { location: 'topicScrapeLinks' })
+    const organic = topic.organic.filter((_, index) => indexes.includes(index))
+
+    const scrapedData = await Promise.all(
+      organic.map(async o => {
+        if (o.scraped) return o.scraped
+        else return await scrapeDataFromUrl(o.link)
+      })
+    )
+
+    const organicWithScrapedData = organic.map((item, index) => {
+      item.scraped = scrapedData[index]
+      return item
+    })
+    topic.organic = topic.organic.map((item, index) => {
+      if (indexes.includes(index)) return organicWithScrapedData.find(o => o.link === item.link)
+      return item
+    })
+    await topic.save()
+    return topic
+  },
+})
+
+TopicTC.addResolver({
+  kind: 'mutation',
+  name: 'topicCopyQuestionToOrganic',
+  type: TopicTC,
+  args: {
+    id: 'MongoID!',
+    indexes: '[Int!]!',
+  },
+  resolve: async ({ args }) => {
+    const { id, indexes } = args
+    const topic = await TopicModel.findById(id)
+    if (!topic) GQLErrorHandler('Topic not found', 'NOT_FOUND', { location: 'topicCopyQuestionToOrganic' })
+    const newOrganic: Topic['organic'] = topic.peopleAlsoAsk
+      .filter((_, index) => indexes.includes(index))
+      .map(item => ({
+        title: item.title,
+        link: item.link,
+        scraped: '',
+        snippet: item.snippet,
+      }))
+
+    topic.organic = [...topic.organic, ...newOrganic]
+    await topic.save()
+    return topic
+  },
+})
+
 const queries = {
   topicFindAll: TopicTC.getResolver('topicFindAll'),
   topicFindById: TopicTC.getResolver('topicFindById'),
@@ -179,6 +240,8 @@ const mutations = {
   topicDeleteOne: TopicTC.getResolver('topicDeleteOne'),
   topicDeleteResource: TopicTC.getResolver('topicDeleteResource'),
   topicStartGoogleSearch: TopicTC.getResolver('topicStartGoogleSearch'),
+  topicScrapeLinks: TopicTC.getResolver('topicScrapeLinks'),
+  topicCopyQuestionToOrganic: TopicTC.getResolver('topicCopyQuestionToOrganic'),
 }
 
 export default {

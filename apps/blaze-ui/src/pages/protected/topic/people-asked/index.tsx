@@ -1,8 +1,10 @@
-import { EnumResourceType, TopicPeopleAlsoAsk, useTopicDeleteResourceMutation } from '@blaze-write/api-operations'
+import { TopicPeopleAlsoAsk } from '@blaze-write/api-operations'
 import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { useDataGrid } from '../../../hooks'
 import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
+import { StyledActionSection } from '../../../../components/table-tool-bar-menu'
+import { useDataGrid } from '../../../../hooks'
+import useServerData from './use-server-data'
 
 interface QuestionTabPanelProps {
   questions: TopicPeopleAlsoAsk[]
@@ -11,12 +13,13 @@ interface QuestionTabPanelProps {
 
 export function Question({ questions, topicId }: QuestionTabPanelProps) {
   const { register, selectedRows, setSelectedRows } = useDataGrid()
-  const [deleteQuestion, { loading }] = useTopicDeleteResourceMutation({
-    refetchQueries: ['TopicFindById'],
-    onCompleted: () => {
+  const { loading, handleDeleteQuestion, handleCopyQuestionToOrganic } = useServerData({
+    topicId,
+    onMutationCompleted: () => {
       setSelectedRows([])
     },
   })
+
   const columns: GridColDef[] = [
     {
       field: 'question',
@@ -74,36 +77,32 @@ export function Question({ questions, topicId }: QuestionTabPanelProps) {
         {...register()}
         slots={{
           toolbar: () => (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                width: '100%',
-                height: '3rem',
-                backgroundColor: 'transparent',
-              }}
-            >
+            <StyledActionSection>
               {selectedRows.length > 0 && (
-                <Button
-                  variant="outlined"
-                  startIcon={<Trash2 />}
-                  color="error"
-                  onClick={() => {
-                    deleteQuestion({
-                      variables: {
-                        resourceType: EnumResourceType.PeopleAlsoAsk,
-                        topicDeleteResourceId: topicId,
-                        indexes: selectedRows,
-                      },
-                    })
-                  }}
-                >
-                  Remove selected questions
-                </Button>
+                <>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Trash2 />}
+                    color="error"
+                    onClick={() => {
+                      handleDeleteQuestion(selectedRows)
+                    }}
+                  >
+                    Remove selected questions
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<FolderKanban />}
+                    color="primary"
+                    onClick={() => {
+                      handleCopyQuestionToOrganic(selectedRows)
+                    }}
+                  >
+                    Copy selected questions to organic
+                  </Button>
+                </>
               )}
-            </Box>
+            </StyledActionSection>
           ),
           noRowsOverlay: () => <Box> No organic links found. Please add some organic links to this topic.</Box>,
         }}

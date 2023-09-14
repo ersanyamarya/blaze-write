@@ -21,3 +21,15 @@ mutation TopicDeleteOne($topicDeleteOneId: MongoID!) {
     _id
   }
 }
+
+mutation TopicScrapeLinks($topicScrapeLinksId: MongoID!, $indexes: [Int!]!) {
+  topicScrapeLinks(id: $topicScrapeLinksId, indexes: $indexes) {
+    _id
+  }
+}
+
+mutation TopicCopyQuestionToOrganic($topicCopyQuestionToOrganicId: MongoID!, $indexes: [Int!]!) {
+  topicCopyQuestionToOrganic(id: $topicCopyQuestionToOrganicId, indexes: $indexes) {
+    _id
+  }
+}
