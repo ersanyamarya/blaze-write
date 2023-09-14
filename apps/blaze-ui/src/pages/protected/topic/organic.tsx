@@ -1,5 +1,5 @@
 import { EnumResourceType, TopicOrganic, useTopicDeleteResourceMutation } from '@blaze-write/api-operations'
-import { Box, Button, IconButton, Stack, Tooltip, Typography, styled } from '@mui/material'
+import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
 import { useDataGrid } from '../../../hooks'

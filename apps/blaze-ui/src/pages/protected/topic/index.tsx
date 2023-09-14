@@ -1,5 +1,5 @@
 import { TopicOrganic, TopicPeopleAlsoAsk, useTopicFindByIdQuery } from '@blaze-write/api-operations'
-import { AppBar, Box, Link, Stack, Tab, Tabs, Toolbar, Typography } from '@mui/material'
+import { AppBar, Box, Stack, Tab, Tabs, Toolbar, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import { useParams } from 'react-router-dom'
@@ -67,7 +67,7 @@ export function Topic() {
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
           {data?.topicFindById?.relatedSearches && data?.topicFindById?.relatedSearches.length && (
-            <RelatedSearch relatedSearch={data?.topicFindById?.relatedSearches} topicId={topicID} />
+            <RelatedSearch relatedSearch={data?.topicFindById?.relatedSearches as string[]} topicId={topicID} />
           )}
         </CustomTabPanel>
       </Stack>

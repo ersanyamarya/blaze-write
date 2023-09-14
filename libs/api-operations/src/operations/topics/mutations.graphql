@@ -9,3 +9,9 @@ mutation TopicDeleteResource($topicDeleteResourceId: MongoID!, $indexes: [Int!]!
     _id
   }
 }
+
+mutation TopicStartGoogleSearch($topicStartGoogleSearchId: MongoID!, $alternateTopic: String) {
+  topicStartGoogleSearch(id: $topicStartGoogleSearchId, alternateTopic: $alternateTopic) {
+    _id
+  }
+}

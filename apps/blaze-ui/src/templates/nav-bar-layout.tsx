@@ -1,4 +1,4 @@
-import { EnumSortOrder, useTopicFindAllQuery } from '@blaze-write/api-operations'
+import { EnumSortOrder, useTopicCreateOneMutation, useTopicFindAllQuery } from '@blaze-write/api-operations'
 import {
   AppBar,
   Box,
@@ -15,30 +15,44 @@ import {
 } from '@mui/material'
 import { Frame, PlusCircleIcon } from 'lucide-react'
 import { NavLink, useLocation, useOutlet } from 'react-router-dom'
+import AddTopicDialog from './components/add-topic'
+import { useState } from 'react'
+import addTopic from './components/add-topic'
 const drawerWidth = 320
 const pathRegexp = (route: string): RegExp => new RegExp(`${route}.*`)
 export function NavBarLayout() {
   const theme = useTheme()
   const location = useLocation()
   const outlet = useOutlet()
-
+  const [open, setOpen] = useState(false)
+  const [currentTopic, setCurrentTopic] = useState<string>('apple')
   const { data, loading, error } = useTopicFindAllQuery({
     variables: {
       sort: EnumSortOrder.Asc,
     },
   })
+
+  const [addTopic] = useTopicCreateOneMutation({
+    refetchQueries: ['TopicFindAll'],
+  })
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const handleAddTopic = (topic: string) => {
+    addTopic({
+      variables: {
+        name: topic,
+      },
+    })
+    setOpen(false)
+  }
+
   if (loading) return <Typography variant="h1"> Loading... </Typography>
   if (error) return <Typography variant="h1"> Error! </Typography>
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {/* <AppBar position="fixed" sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Blaze Writer
-          </Typography>
-        </Toolbar>
-      </AppBar> */}
+      <AddTopicDialog open={open} handleClose={handleClose} handleAddTopic={handleAddTopic} name={currentTopic} />
       <Drawer
         sx={{
           width: drawerWidth,
@@ -58,7 +72,12 @@ export function NavBarLayout() {
 
         <List>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                setCurrentTopic('')
+                setOpen(true)
+              }}
+            >
               <ListItemIcon>{<PlusCircleIcon />}</ListItemIcon>
               <ListItemText primary="Add new Topic" />
             </ListItemButton>

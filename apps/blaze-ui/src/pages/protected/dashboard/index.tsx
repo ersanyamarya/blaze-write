@@ -4,29 +4,10 @@ import { Frame, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { datePrettify, timeDifference, timePrettify } from 'time-pocket'
-import AddTopicDialog from './add-topic'
 
 export function Dashboard() {
   // Navigator
   const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
-  const [currentTopic, setCurrentTopic] = useState<string>('apple')
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-  const handleAddTopic = (topic: string) => {
-    addTopic({
-      variables: {
-        name: topic,
-      },
-    })
-    setOpen(false)
-  }
-
-  const [addTopic] = useTopicCreateOneMutation({
-    refetchQueries: ['TopicFindAll'],
-  })
 
   const { data, loading, error } = useTopicFindAllQuery({
     variables: {
@@ -39,26 +20,11 @@ export function Dashboard() {
 
   return (
     <Stack textAlign="center" spacing={2} direction="column">
-      <AddTopicDialog open={open} handleClose={handleClose} handleAddTopic={handleAddTopic} name={currentTopic} />
-      <IconButton
-        onClick={() => {
-          setCurrentTopic('')
-          setOpen(true)
-        }}
-        sx={{
-          position: 'absolute',
-          bottom: '2rem',
-          right: '2rem',
-        }}
-        aria-label="delete"
-      >
-        <PlusCircle size={64} />
-      </IconButton>
       <Typography variant="h1">
         <Frame size={64} />
         Topics
       </Typography>
-      <Stack spacing={2} direction="row" justifyContent="center" flexWrap="wrap">
+      <Stack gap={2} direction="row" justifyContent="center" flexWrap="wrap">
         {data?.topicFindAll?.map(topic => (
           <Card
             key={topic?._id}
