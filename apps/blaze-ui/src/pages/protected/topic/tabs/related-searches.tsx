@@ -2,7 +2,7 @@ import { EnumResourceType, useTopicDeleteResourceMutation } from '@blaze-write/a
 import { Box, Button, IconButton, Stack, Tooltip } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
-import { useDataGrid } from '../../../hooks'
+import { useDataGrid } from '../../../../hooks'
 
 interface RelatedSearchesTabPanelProps {
   relatedSearch: string[]

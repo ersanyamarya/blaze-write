@@ -2,8 +2,8 @@ import { TopicPeopleAlsoAsk } from '@blaze-write/api-operations'
 import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
-import { StyledActionSection } from '../../../../components/table-tool-bar-menu'
-import { useDataGrid } from '../../../../hooks'
+import { StyledActionSection } from '../../../../../components/table-tool-bar-menu'
+import { useDataGrid } from '../../../../../hooks'
 import useServerData from './use-server-data'
 
 interface QuestionTabPanelProps {

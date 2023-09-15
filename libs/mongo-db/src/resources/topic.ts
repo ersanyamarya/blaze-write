@@ -67,6 +67,9 @@ const TopicSchema = new Schema(
     relatedSearches: {
       type: [String],
     },
+    blogPosts: {
+      type: [String],
+    },
   },
   {
     timestamps: true,
@@ -119,6 +122,7 @@ export interface Topic extends Document {
   organic: Organic[]
   peopleAlsoAsk: PeopleAlsoAsk[]
   relatedSearches: string[]
+  blogPosts: string[]
   movePeopleAlsoAskToOrganic(indexes: number[]): void
   deletePeopleAlsoAsk(indexes: number[]): void
   deleteOrganic(indexes: number[]): void

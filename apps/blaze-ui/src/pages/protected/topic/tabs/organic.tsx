@@ -20,8 +20,8 @@ import {
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { ExternalLink, FolderKanban, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { StyledActionSection } from '../../../components/table-tool-bar-menu'
-import { useDataGrid } from '../../../hooks'
+import { StyledActionSection } from '../../../../components/table-tool-bar-menu'
+import { useDataGrid } from '../../../../hooks'
 
 interface OrganicTabPanelProps {
   organicLinks: TopicOrganic[]

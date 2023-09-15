@@ -1,10 +1,4 @@
-import {
-  TopicOrganic,
-  TopicPeopleAlsoAsk,
-  useTopicDeleteOneMutation,
-  useTopicFindByIdQuery,
-  useTopicStartGoogleSearchMutation,
-} from '@blaze-write/api-operations'
+import { TopicOrganic, TopicPeopleAlsoAsk } from '@blaze-write/api-operations'
 import {
   AppBar,
   Box,
@@ -22,49 +16,31 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  useTheme,
 } from '@mui/material'
 import { useState } from 'react'
 
-import { FolderSearch, SearchCode, Trash2 } from 'lucide-react'
+import { FolderSearch, SearchCode, Trash2, Wand2 } from 'lucide-react'
 import { useParams } from 'react-router-dom'
-import { Organic } from './organic'
-import { Question } from './people-asked'
-import { RelatedSearch } from './related-searches'
+import { BlogsTab, Organic, Question, RelatedSearch } from './tabs'
+import useServerData from './use-server-data'
 
 const drawerWidth = 320
 export function Topic() {
   const topicID = useParams()['topicId']
   const [value, setValue] = useState(0)
-  const theme = useTheme()
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-  }
-  const { data, loading, error } = useTopicFindByIdQuery({
-    variables: {
-      topicFindByIdId: topicID,
-    },
-  })
-
-  const [deleteTopic, { loading: deleteLoad }] = useTopicDeleteOneMutation({
-    refetchQueries: ['TopicFindAll'],
-  })
-
-  const [grabGoogleSearchResults, { loading: searchLoad }] = useTopicStartGoogleSearchMutation({
-    refetchQueries: ['TopicFindById'],
-  })
-
-  const handleGrabGoogleSearchResults = (alternateTopic = '') => {
-    grabGoogleSearchResults({
-      variables: {
-        alternateTopic,
-        topicStartGoogleSearchId: topicID,
-      },
-    })
-  }
 
   const [open, setOpen] = useState(false)
+  const { loading, error, topicQueryData, handleDeleteTopic, handleGrabGoogleSearchResults, handleWriteBlog } =
+    useServerData({
+      topicID: topicID as string,
+      onMutationCompleted: () => {
+        setOpen(false)
+      },
+    })
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+  }
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -74,20 +50,11 @@ export function Topic() {
     setOpen(false)
   }
 
-  const handleDeleteTopic = () => {
-    deleteTopic({
-      variables: {
-        topicDeleteOneId: topicID,
-      },
-    })
-    setOpen(false)
-  }
-
-  if (loading || deleteLoad || searchLoad) return <Skeleton variant="rectangular" height={'100vh'} />
+  if (loading) return <Skeleton variant="rectangular" height={'100vh'} />
   if (error || !topicID)
     return (
       <Typography variant="h2" component="h1" gutterBottom>
-        Error! <br /> {error?.graphQLErrors[0].message}{' '}
+        Error!: {error}
       </Typography>
     )
 
@@ -97,7 +64,7 @@ export function Topic() {
       <AppBar position="fixed" sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            {data?.topicFindById?.name}
+            {topicQueryData?.topicFindById?.name}
           </Typography>
           <Stack direction="row" justifyContent="flex-end" alignItems="center">
             <Tooltip title="Delete Topic" placement="right-start" arrow>
@@ -108,7 +75,7 @@ export function Topic() {
             <Tooltip title="Go to google search results" placement="right-start" arrow>
               <IconButton
                 aria-label="edit"
-                onClick={() => window.open(`https://google.com/search?q=${data?.topicFindById?.name}`, '_blank')}
+                onClick={() => window.open(`https://google.com/search?q=${topicQueryData?.topicFindById?.name}`, '_blank')}
               >
                 <SearchCode />
               </IconButton>
@@ -116,6 +83,11 @@ export function Topic() {
             <Tooltip title="Grab google Search Results" placement="right-start" arrow>
               <IconButton aria-label="edit" onClick={() => handleGrabGoogleSearchResults()}>
                 <FolderSearch />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Generate Content" placement="right-start" arrow>
+              <IconButton aria-label="edit" onClick={() => handleWriteBlog()}>
+                <Wand2 />
               </IconButton>
             </Tooltip>
           </Stack>
@@ -127,7 +99,7 @@ export function Topic() {
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
               value={value}
-              onChange={handleChange}
+              onChange={handleTabChange}
               aria-label="Main topic sections"
               centered
               variant="fullWidth"
@@ -138,23 +110,29 @@ export function Topic() {
               <Tab label="Organic Links" />
               <Tab label="Questions to be answered" />
               <Tab label="Related Search" />
+              <Tab label="Blog Posts" disabled={topicQueryData?.topicFindById?.blogPosts?.length === 0} />
             </Tabs>
           </Box>
         </Box>
 
         <CustomTabPanel value={value} index={0}>
-          {data?.topicFindById?.organic && data?.topicFindById?.organic.length && (
-            <Organic organicLinks={data?.topicFindById?.organic as TopicOrganic[]} topicId={topicID} />
+          {topicQueryData?.topicFindById?.organic && topicQueryData?.topicFindById?.organic.length && (
+            <Organic organicLinks={topicQueryData?.topicFindById?.organic as TopicOrganic[]} topicId={topicID} />
           )}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          {data?.topicFindById?.peopleAlsoAsk && data?.topicFindById?.peopleAlsoAsk.length && (
-            <Question questions={data?.topicFindById?.peopleAlsoAsk as TopicPeopleAlsoAsk[]} topicId={topicID} />
+          {topicQueryData?.topicFindById?.peopleAlsoAsk && topicQueryData?.topicFindById?.peopleAlsoAsk.length && (
+            <Question questions={topicQueryData?.topicFindById?.peopleAlsoAsk as TopicPeopleAlsoAsk[]} topicId={topicID} />
           )}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-          {data?.topicFindById?.relatedSearches && data?.topicFindById?.relatedSearches.length && (
-            <RelatedSearch relatedSearch={data?.topicFindById?.relatedSearches as string[]} topicId={topicID} />
+          {topicQueryData?.topicFindById?.relatedSearches && topicQueryData?.topicFindById?.relatedSearches.length && (
+            <RelatedSearch relatedSearch={topicQueryData?.topicFindById?.relatedSearches as string[]} topicId={topicID} />
+          )}
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={3}>
+          {topicQueryData?.topicFindById?.blogPosts && topicQueryData?.topicFindById?.blogPosts.length && (
+            <BlogsTab blogs={topicQueryData?.topicFindById?.blogPosts as string[]} topicId={topicID} />
           )}
         </CustomTabPanel>
       </Stack>

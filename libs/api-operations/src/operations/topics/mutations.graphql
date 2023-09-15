@@ -33,3 +33,9 @@ mutation TopicCopyQuestionToOrganic($topicCopyQuestionToOrganicId: MongoID!, $in
     _id
   }
 }
+
+mutation TopicWriteBlogPost($topicWriteBlogPostId: MongoID!) {
+  topicWriteBlogPost(id: $topicWriteBlogPostId) {
+    _id
+  }
+}

@@ -25,6 +25,7 @@ query TopicFindById($topicFindByIdId: MongoID!) {
       link
     }
     relatedSearches
+    blogPosts
     _id
     createdAt
     updatedAt

@@ -1,16 +1,28 @@
 import { openAIConfig, serperAIConfig } from '@blaze-write/config'
 import { Topic, TopicModel } from '@blaze-write/mongo-db'
 import { GQLErrorHandler } from '@ersanyamarya/apollo-graphql-helper'
-import { getSummaryFromTextAndObjective, scrapeDataFromUrl, searchOnGoogle } from '@ersanyamarya/codename-langchain'
+import {
+  getSummaryFromTextAndObjective,
+  scrapeDataFromUrl,
+  searchOnGoogle,
+  writeBlogPost,
+} from '@ersanyamarya/codename-langchain'
 import { schemaComposer } from 'graphql-compose'
 import { composeMongoose } from 'graphql-compose-mongoose'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { OpenAI } from 'langchain/llms/openai'
+import { ChatOpenAI } from 'langchain/chat_models/openai'
 const TopicTC = composeMongoose(TopicModel, {})
 
 const model = new OpenAI({
   openAIApiKey: openAIConfig.apiKey,
   temperature: 0.1,
+})
+
+const chatModel = new ChatOpenAI({
+  openAIApiKey: openAIConfig.apiKey,
+  temperature: 0.3,
+  modelName: 'gpt-3.5-turbo',
 })
 
 const embeddings = new OpenAIEmbeddings({
@@ -245,6 +257,36 @@ TopicTC.addResolver({
   },
 })
 
+TopicTC.addResolver({
+  kind: 'mutation',
+  name: 'topicWriteBlogPost',
+  type: TopicTC,
+  args: {
+    id: 'MongoID!',
+  },
+  resolve: async ({ args }) => {
+    const { id } = args
+    const topic = await TopicModel.findById(id)
+    if (!topic) GQLErrorHandler('Topic not found', 'NOT_FOUND', { location: 'topicWriteBlogPost' })
+    const { name, organic, peopleAlsoAsk } = topic
+    const context = organic.reduce((acc, item) => {
+      acc = acc + item.link + '\n' + item.scraped + '\n'
+      return acc
+    }, '')
+    const blog = await writeBlogPost({
+      subject: name,
+      chatModel,
+      peopleAlsoAsk: peopleAlsoAsk.map(item => item.title),
+      context,
+      embeddings,
+    })
+
+    topic.blogPosts.push(blog)
+    await topic.save()
+    return topic
+  },
+})
+
 const queries = {
   topicFindAll: TopicTC.getResolver('topicFindAll'),
   topicFindById: TopicTC.getResolver('topicFindById'),
@@ -256,6 +298,7 @@ const mutations = {
   topicStartGoogleSearch: TopicTC.getResolver('topicStartGoogleSearch'),
   topicScrapeLinks: TopicTC.getResolver('topicScrapeLinks'),
   topicCopyQuestionToOrganic: TopicTC.getResolver('topicCopyQuestionToOrganic'),
+  topicWriteBlogPost: TopicTC.getResolver('topicWriteBlogPost'),
 }
 
 export default {
