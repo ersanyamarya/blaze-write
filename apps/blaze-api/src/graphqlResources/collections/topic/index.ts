@@ -165,6 +165,7 @@ const EnumResourceType = schemaComposer.createEnumTC({
     ORGANIC: { value: 'organic' },
     PEOPLE_ALSO_ASK: { value: 'peopleAlsoAsk' },
     RELATED_SEARCHES: { value: 'relatedSearches' },
+    BLOG_POSTS: { value: 'blogPosts' },
   },
 })
 
@@ -187,6 +188,7 @@ TopicTC.addResolver({
     if (resourceType === 'organic') topic.deleteOrganic(indexes)
     else if (resourceType === 'peopleAlsoAsk') topic.deletePeopleAlsoAsk(indexes)
     else if (resourceType === 'relatedSearches') topic.deleteRelatedSearches(indexes)
+    else if (resourceType === 'blogPosts') topic.deleteBlogPosts(indexes)
 
     await topic.save()
     return topic
@@ -270,7 +272,7 @@ TopicTC.addResolver({
     if (!topic) GQLErrorHandler('Topic not found', 'NOT_FOUND', { location: 'topicWriteBlogPost' })
     const { name, organic, peopleAlsoAsk } = topic
     const context = organic.reduce((acc, item) => {
-      acc = acc + item.link + '\n' + item.scraped + '\n'
+      acc = acc + 'Link:' + item.link + '\n' + 'Text' + item.scraped + '\n'
       return acc
     }, '')
     const blog = await writeBlogPost({
@@ -282,6 +284,25 @@ TopicTC.addResolver({
     })
 
     topic.blogPosts.push(blog)
+    await topic.save()
+    return topic
+  },
+})
+
+TopicTC.addResolver({
+  kind: 'mutation',
+  name: 'topicUpdateBlogPost',
+  type: TopicTC,
+  args: {
+    id: 'MongoID!',
+    index: 'Int!',
+    blogPost: 'String!',
+  },
+  resolve: async ({ args }) => {
+    const { id, index, blogPost } = args
+    const topic = await TopicModel.findById(id)
+    if (!topic) GQLErrorHandler('Topic not found', 'NOT_FOUND', { location: 'topicUpdateBlogPost' })
+    topic.blogPosts[index] = blogPost
     await topic.save()
     return topic
   },
@@ -299,6 +320,7 @@ const mutations = {
   topicScrapeLinks: TopicTC.getResolver('topicScrapeLinks'),
   topicCopyQuestionToOrganic: TopicTC.getResolver('topicCopyQuestionToOrganic'),
   topicWriteBlogPost: TopicTC.getResolver('topicWriteBlogPost'),
+  topicUpdateBlogPost: TopicTC.getResolver('topicUpdateBlogPost'),
 }
 
 export default {

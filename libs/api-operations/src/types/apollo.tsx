@@ -20,6 +20,7 @@ export type Scalars = {
 };
 
 export enum EnumResourceType {
+  BlogPosts = 'BLOG_POSTS',
   Organic = 'ORGANIC',
   PeopleAlsoAsk = 'PEOPLE_ALSO_ASK',
   RelatedSearches = 'RELATED_SEARCHES'
@@ -39,6 +40,7 @@ export type Mutation = {
   topicDeleteResource?: Maybe<Topic>;
   topicScrapeLinks?: Maybe<Topic>;
   topicStartGoogleSearch?: Maybe<Topic>;
+  topicUpdateBlogPost?: Maybe<Topic>;
   topicWriteBlogPost?: Maybe<Topic>;
 };
 
@@ -75,6 +77,13 @@ export type MutationTopicScrapeLinksArgs = {
 export type MutationTopicStartGoogleSearchArgs = {
   alternateTopic?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['MongoID']['input'];
+};
+
+
+export type MutationTopicUpdateBlogPostArgs = {
+  blogPost: Scalars['String']['input'];
+  id: Scalars['MongoID']['input'];
+  index: Scalars['Int']['input'];
 };
 
 
@@ -184,6 +193,15 @@ export type TopicWriteBlogPostMutationVariables = Exact<{
 
 
 export type TopicWriteBlogPostMutation = { __typename?: 'Mutation', topicWriteBlogPost?: { __typename?: 'Topic', _id: any } | null };
+
+export type TopicUpdateBlogPostMutationVariables = Exact<{
+  topicUpdateBlogPostId: Scalars['MongoID']['input'];
+  index: Scalars['Int']['input'];
+  blogPost: Scalars['String']['input'];
+}>;
+
+
+export type TopicUpdateBlogPostMutation = { __typename?: 'Mutation', topicUpdateBlogPost?: { __typename?: 'Topic', _id: any } | null };
 
 export type TopicFindAllQueryVariables = Exact<{
   sort?: InputMaybe<EnumSortOrder>;
@@ -443,6 +461,45 @@ export function useTopicWriteBlogPostMutation(baseOptions?: Apollo.MutationHookO
 export type TopicWriteBlogPostMutationHookResult = ReturnType<typeof useTopicWriteBlogPostMutation>;
 export type TopicWriteBlogPostMutationResult = Apollo.MutationResult<TopicWriteBlogPostMutation>;
 export type TopicWriteBlogPostMutationOptions = Apollo.BaseMutationOptions<TopicWriteBlogPostMutation, TopicWriteBlogPostMutationVariables>;
+export const TopicUpdateBlogPostDocument = gql`
+    mutation TopicUpdateBlogPost($topicUpdateBlogPostId: MongoID!, $index: Int!, $blogPost: String!) {
+  topicUpdateBlogPost(
+    id: $topicUpdateBlogPostId
+    index: $index
+    blogPost: $blogPost
+  ) {
+    _id
+  }
+}
+    `;
+export type TopicUpdateBlogPostMutationFn = Apollo.MutationFunction<TopicUpdateBlogPostMutation, TopicUpdateBlogPostMutationVariables>;
+
+/**
+ * __useTopicUpdateBlogPostMutation__
+ *
+ * To run a mutation, you first call `useTopicUpdateBlogPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTopicUpdateBlogPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [topicUpdateBlogPostMutation, { data, loading, error }] = useTopicUpdateBlogPostMutation({
+ *   variables: {
+ *      topicUpdateBlogPostId: // value for 'topicUpdateBlogPostId'
+ *      index: // value for 'index'
+ *      blogPost: // value for 'blogPost'
+ *   },
+ * });
+ */
+export function useTopicUpdateBlogPostMutation(baseOptions?: Apollo.MutationHookOptions<TopicUpdateBlogPostMutation, TopicUpdateBlogPostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<TopicUpdateBlogPostMutation, TopicUpdateBlogPostMutationVariables>(TopicUpdateBlogPostDocument, options);
+      }
+export type TopicUpdateBlogPostMutationHookResult = ReturnType<typeof useTopicUpdateBlogPostMutation>;
+export type TopicUpdateBlogPostMutationResult = Apollo.MutationResult<TopicUpdateBlogPostMutation>;
+export type TopicUpdateBlogPostMutationOptions = Apollo.BaseMutationOptions<TopicUpdateBlogPostMutation, TopicUpdateBlogPostMutationVariables>;
 export const TopicFindAllDocument = gql`
     query TopicFindAll($sort: EnumSortOrder) {
   topicFindAll(sort: $sort) {

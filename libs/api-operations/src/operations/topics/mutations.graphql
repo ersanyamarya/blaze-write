@@ -39,3 +39,9 @@ mutation TopicWriteBlogPost($topicWriteBlogPostId: MongoID!) {
     _id
   }
 }
+
+mutation TopicUpdateBlogPost($topicUpdateBlogPostId: MongoID!, $index: Int!, $blogPost: String!) {
+  topicUpdateBlogPost(id: $topicUpdateBlogPostId, index: $index, blogPost: $blogPost) {
+    _id
+  }
+}

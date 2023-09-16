@@ -99,6 +99,9 @@ TopicSchema.methods = {
   deleteRelatedSearches(indexes: number[]) {
     this.relatedSearches = this.relatedSearches.filter((item, index) => !indexes.includes(index))
   },
+  deleteBlogPosts(indexes: number[]) {
+    this.blogPosts = this.blogPosts.filter((item, index) => !indexes.includes(index))
+  },
   addPeopleAlsoAsk(peopleAlsoAsk: PeopleAlsoAsk[]) {
     this.peopleAlsoAsk = [...this.peopleAlsoAsk, ...peopleAlsoAsk]
   },
@@ -127,6 +130,7 @@ export interface Topic extends Document {
   deletePeopleAlsoAsk(indexes: number[]): void
   deleteOrganic(indexes: number[]): void
   deleteRelatedSearches(indexes: number[]): void
+  deleteBlogPosts(indexes: number[]): void
   addPeopleAlsoAsk(peopleAlsoAsk: PeopleAlsoAsk[]): void
 }
 
